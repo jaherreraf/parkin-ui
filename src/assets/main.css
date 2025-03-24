@@ -1,0 +1,16 @@
+@import "tailwindcss";
+/* Efecto combinado fade + slide */
+.fade-slide-enter-active {
+transition: all 0.3s ease-out;
+}
+.fade-slide-leave-active {
+transition: all 0.2s ease-in;
+}
+.fade-slide-enter-from {
+opacity: 0;
+transform: translateY(10px);
+}
+.fade-slide-leave-to {
+opacity: 0;
+transform: translateY(-10px);
+}
