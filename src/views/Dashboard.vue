@@ -21,6 +21,10 @@ const plates = ref(['AEJ62R', 'XYZ123', 'ABC456'])
 function handleActivator(index){
   indexActivator.value = index
 }
+function closeSection(){
+  localStorage.removeItem('user')
+  window.location.href = "/app";
+}
 </script>
 
 <template>
@@ -74,6 +78,7 @@ function handleActivator(index){
             <span class="text-gray-500">Email: {{ user.email }}</span>
             <span class="text-gray-500">teléfono: {{ user.phone_number }}</span>
           </div>
+          <button @click="closeSection" class="border border-green-500 bg-green-300 shadow-2xl p-4 rounded-xl font-bold text-green-950 cursor-pointer">Cerrar Sección</button>
         </div>
         <button class="text-center p-3 rounded-xl cursor-pointer  border hover:bg-gray-700 transition-colors duration-300">
           <router-link to="/">
@@ -212,6 +217,7 @@ function handleActivator(index){
                 <span class="text-xl font-semibold text-gray-800">Cédula de identidad: {{ user.identity_number }}</span>
                 <span class="text-gray-500">Número de teléfono: {{ user.phone_number }}</span>
               </div>
+              <button @click="closeSection" class="border border-green-500 bg-green-300 shadow-2xl p-4 rounded-xl font-bold text-green-950 cursor-pointer">Cerrar Sección</button>
             </div>
             <div v-else>
               <img :src="incognito" class="w-16 h-16 rounded-full border-2 border-blue-500 p-1">
