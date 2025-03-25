@@ -1,9 +1,72 @@
 <script setup>
-import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
-import arrow from '@/assets/right-from.svg'
-const identification = ref(null);
-const password = ref(null);
+  import { ref } from 'vue';
+  import { RouterLink } from 'vue-router';
+  
+  import { dataBase } from '@/stores/database'
+  import axios from 'axios';
+  import arrow from '@/assets/right-from.svg'
+  
+  const stores = dataBase()
+  const users = ref(stores.users)
+  
+  const notification = ref({
+    message: '',
+    type: 'error', // 'error', 'success', 'warning'
+    show: false
+  })
+  const errorTimeout = ref(null)
+  const identification = ref(null);
+  const password = ref(null);
+  function showNotification(message, type = 'error') {
+    if (errorTimeout.value) {
+      clearTimeout(errorTimeout.value)
+    }
+    
+    notification.value = {
+      message,
+      type,
+      show: true
+    }
+    
+    errorTimeout.value = setTimeout(() => {
+      notification.value.show = false
+    }, 5000)
+  }
+  async function submit(){
+    let exists = false
+    let data_user = {}
+    if(!identification.value || !password.value){
+      showNotification("Campos obligatorios", 'error')
+      return
+    }
+    Array.from(users.value).forEach(user =>{
+      if(user.username == identification.value || user.email==identification.value || user.identity_number==identification.value || user.phone_number==identification.value){
+        exists = true
+        data_user  = user
+      }
+    })
+    if(!exists)showNotification("Ningun usuario tiene esa identificación", 'warning')
+    try{
+        const response = await axios.post('http://127.0.0.1:8000/login', {
+          identity_number: identification.value,
+          password: password.value
+        }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        });
+        localStorage.setItem('user', JSON.stringify(data_user));
+        window.location.href = "/app";
+        showNotification("Bienvenido a nuestra app", 'success')
+    }catch(error){
+      if (error.status ==500){
+        showNotification("Contraseña inválida", 'error')
+      }else{
+        showNotification("Error al iniciar sección", 'error')
+      }
+    }
+  }
+
 </script>
 
 <template>
@@ -47,7 +110,8 @@ const password = ref(null);
           </div>
         </div>
         <!-- Botón de inicio de sesión -->
-        <button class="bg-violet-950 hover:bg-violet-900 focus:bg-violet-900 focus:text-white hover:text-white transition-all duration-300 text-center font-black text-violet-50 py-3 px-6 rounded-xl cursor-pointer">
+        <button class="bg-violet-950 hover:bg-violet-900 focus:bg-violet-900 focus:text-white hover:text-white transition-all duration-300 text-center font-black text-violet-50 py-3 px-6 rounded-xl cursor-pointer"
+        @click="submit">
           Iniciar Sesión
         </button>
       </div>
@@ -68,5 +132,38 @@ const password = ref(null);
             <img :src="arrow" class="w-12 h-12 rotate-180">
         </router-link>
     </button>
+    <!-- Notificación dinámica -->
+    <transition name="slide-fade">
+      <div 
+        v-if="notification.show"
+        class="fixed bottom-4 right-4 w-96 h-24 p-4 rounded-lg shadow-lg transition-all duration-500 ease-in-out flex items-center"
+        :class="{
+          'bg-red-100 border-l-4 border-red-500 text-red-700': notification.type === 'error',
+          'bg-green-100 border-l-4 border-green-500 text-green-700': notification.type === 'success',
+          'bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700': notification.type === 'warning'
+        }"
+      >
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          class="h-6 w-6 mr-2" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+          :class="{
+            'text-red-600': notification.type === 'error',
+            'text-green-600': notification.type === 'success',
+            'text-yellow-600': notification.type === 'warning'
+          }"
+        >
+          <path 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            stroke-width="2" 
+            :d="notification.type === 'success' ? 'M5 13l4 4L19 7' : 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'" 
+          />
+        </svg>
+        <span class="font-semibold">{{ notification.message }}</span>
+      </div>
+    </transition>
   </div>
 </template>

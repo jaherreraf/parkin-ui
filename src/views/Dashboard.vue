@@ -6,7 +6,8 @@ import logo from "@/assets/parking-light.svg"
 import car from "@/assets/car.svg"
 import wallet from "@/assets/wallet.svg"
 import map from "@/assets/map.svg"
-import user from "@/assets/user.svg"
+import userImg from "@/assets/user.svg"
+import incognito from "@/assets/user-secret-solid.svg"
 import arrow from '@/assets/right-from.svg'
 import Today from '@/components/Today.vue';
 
@@ -15,7 +16,7 @@ import Movements from '@/components/Movements.vue';
 
 const activator = ref([{title:"Movimientos" , img: wallet},{title:"Operaciones" , img:car},{title:"Paso a paso" , img:map}])
 const indexActivator = ref(0)
-const username = ref("USERNAME")
+const user = ref(JSON.parse(localStorage.getItem('user')) || null)
 const plates = ref(['AEJ62R', 'XYZ123', 'ABC456'])
 function handleActivator(index){
   indexActivator.value = index
@@ -61,11 +62,32 @@ function handleActivator(index){
     <!--Main Content Mobile-->
     <div class="md:hidden w-screen h-dvh mb-4 flex flex-col">
       <!--User mobile-->
-      <section class="flex items-center justify-between  w-screen p-4">
-        <img :src="user" class="w-18 h-18">
-        <div class="flex flex-col items-center justify-center">
-          Hello, {{username}}
-          <Today></Today>
+      <section class="flex items-center justify-between  w-screen p-4" v-if="user!==null">
+        <img :src="userImg" class="w-18 h-18">
+        <div class="flex flex-col items-center justify-center gap-2">
+          <div class="flex flex-col items-center justify-center" v-if="user!==null">
+            Hello, {{user.username}}
+            <Today></Today>
+          </div>
+          <div class="grid grid-flow-row items-center justify-between bg-gray-50 rounded-lg border border-gray-200 p-4">
+            <span class="text-xl font-semibold text-gray-800"> Cédula: {{ user.identity_number }}</span>
+            <span class="text-gray-500">Email: {{ user.email }}</span>
+            <span class="text-gray-500">teléfono: {{ user.phone_number }}</span>
+          </div>
+        </div>
+        <button class="text-center p-3 rounded-xl cursor-pointer  border hover:bg-gray-700 transition-colors duration-300">
+          <router-link to="/">
+            <img :src="arrow" class="w-12 h-12 rotate-180">
+          </router-link>
+        </button>
+      </section>
+      <section class="flex items-center justify-between  w-screen p-4" v-else>
+        <img :src="incognito" class="w-18 h-18">
+        <div>
+          <div class="flex flex-col items-center justify-center">
+            Bienvenido, usuario
+            <Today></Today>
+          </div>
         </div>
         <button class="text-center p-3 rounded-xl cursor-pointer  border hover:bg-gray-700 transition-colors duration-300">
           <router-link to="/">
@@ -180,11 +202,21 @@ function handleActivator(index){
           <!-- User Profile Card Desktop -->
           <div class="font-m-plus-2 col-span-3 row-span-1 bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-x-6
           grid grid-cols-2 place-content-center relative">
-            <div class="flex justify-center items-center gap-2 bg-gray-50 rounded-lg border border-gray-200 p-4">
-              <img :src="user" class="w-16 h-16 rounded-full border-2 border-blue-500 p-1">
+            <div class="flex justify-center items-center gap-2 bg-gray-50 rounded-lg border border-gray-200 p-4" v-if="user !==null">
+              <img :src="userImg" class="w-16 h-16 rounded-full border-2 border-blue-500 p-1">
               <div class="flex flex-col">
-                <span class="text-xl font-semibold text-gray-800">{{ username }}</span>
-                <span class="text-gray-500">usuario@ejemplo.com</span>
+                <span class="text-xl font-semibold text-gray-800">Usuario: {{ user.username }}</span>
+                <span class="text-gray-500">Email: {{ user.email }}</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-xl font-semibold text-gray-800">Cédula de identidad: {{ user.identity_number }}</span>
+                <span class="text-gray-500">Número de teléfono: {{ user.phone_number }}</span>
+              </div>
+            </div>
+            <div v-else>
+              <img :src="incognito" class="w-16 h-16 rounded-full border-2 border-blue-500 p-1">
+              <div>
+                  <span>Te encuentras en estos momentos en modo incógnito</span>                
               </div>
             </div>
             <div class="flex justify-center items-center gap-2 bg-gray-50 rounded-lg border border-gray-200 p-4">
@@ -196,7 +228,7 @@ function handleActivator(index){
           <div class="relative font-m-plus-2 col-span-1 row-span-1 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col items-center justify-center p-4">
             <span class="absolute top-4 left-4 text-4xl">WALLET</span>
             <p>Revisa tu saldo Aquí.</p>
-            <span class="absolute bottom-4 right-4 text-4xl">SALDO <strong>BS 1000</strong></span>
+            <span class="absolute bottom-4 right-4 text-4xl">SALDO <strong>BS {{ user.balance }}</strong></span>
           </div>
           <!-- Main Content Area -->
           <div class="font-m-plus-2 col-span-4 row-span-3 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col">
