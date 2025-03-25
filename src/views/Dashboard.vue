@@ -141,7 +141,7 @@ function handleActivator(index){
           <div class="absolute bottom-5 left-5 right-5 flex justify-between items-end">
             <div>
               <p class="text-sm opacity-80">Saldo disponible</p>
-              <p class="text-3xl font-bold">Bs <span class="animate-pulse">----</span></p>
+              <p class="text-3xl font-bold">Bs <span class="animate-pulse" v-if="user!==null">{{ user.balance }}</span><span class="animate-pulse" v-else>----</span></p>
             </div>
           </div>
           <!-- Patrón decorativo -->
@@ -228,7 +228,7 @@ function handleActivator(index){
           <div class="relative font-m-plus-2 col-span-1 row-span-1 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col items-center justify-center p-4">
             <span class="absolute top-4 left-4 text-4xl">WALLET</span>
             <p>Revisa tu saldo Aquí.</p>
-            <span class="absolute bottom-4 right-4 text-4xl">SALDO <strong>BS {{ user.balance }}</strong></span>
+            <span class="absolute bottom-4 right-4 text-4xl">SALDO <strong v-if="user!==null" class="animate-pulse">BS {{ user.balance }}</strong><strong v-else class="animate-pulse">BS ----</strong></span>
           </div>
           <!-- Main Content Area -->
           <div class="font-m-plus-2 col-span-4 row-span-3 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col">
