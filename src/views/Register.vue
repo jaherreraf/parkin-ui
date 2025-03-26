@@ -146,7 +146,7 @@
     <!-- Contenedor principal con dos columnas -->
     <div id="container" class="bg-violet-500 md:w-[700px] h-dvh md:h-[650px] grid md:grid-cols-2 md:rounded-2xl overflow-hidden">
       <!-- Columna 1: Formulario de Registro -->
-      <div class="bg-white rounded-l-2xl  md:h-full p-12 flex flex-col items-center justify-center gap-8 row-start-2 md:row-start-1">
+      <div class="bg-white rounded-l-2xl  md:h-full px-12 py-8 flex flex-col items-center justify-center gap-8 row-start-2 md:row-start-1">
         <h1 class="font-black text-4xl text-violet-900">Registrarse</h1>
         <div class="w-full max-w-sm space-y-6">
           <!-- Campo de identificación -->

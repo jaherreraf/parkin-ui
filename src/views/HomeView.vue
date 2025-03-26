@@ -9,16 +9,17 @@ import instagram from '@/assets/instagram.svg'
 import Timeline from '@/components/Timeline.vue'
 
 const links = ref([
-  {title:"Inicio", href:"#hero"},
-  {title:"Proposito", href:"#purpose"},
-  {title:"Contacto", href:"#contact"},
+  {title:"Inicio", href:"/#hero"},
+  {title:"Proposito", href:"/#purpose"},
+  {title:"Contacto", href:"/#contact"},
 ])
 
 const isMenuOpen = ref(false)
 </script>
 
 <template>
-  <main class="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+  <transition name="hero-slide">
+    <main class="min-h-screen bg-gradient-to-b from-blue-50 to-white">
     <!-- Header/Navbar -->
     <header class="sticky top-0 z-50 bg-white shadow-sm">
       <div class="container mx-auto px-4 py-4 md:py-6 flex justify-between items-center">
@@ -215,6 +216,7 @@ const isMenuOpen = ref(false)
       </div>
     </footer>
   </main>
+  </transition>
 </template>
 
 <style>
