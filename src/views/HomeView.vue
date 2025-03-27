@@ -3,7 +3,7 @@ import { RouterLink } from 'vue-router'
 import { ref } from 'vue';
 
 import logoDark from '@/assets/parking-dark.svg'
-import logoLight from '@/assets/parking.svg'
+import logoLight from '@/assets/parking-light.svg'
 import parking from '@/assets/parking.svg'
 import xIcon from '@/assets/x.svg'
 import facebook from '@/assets/facebook.svg'
@@ -21,34 +21,58 @@ const isMenuOpen = ref(false)
 
 <template>
   <transition name="hero-slide">
-    <main class="min-h-screen bg-indigo-950 text-lg flex flex-col">
-    <header class="w-screen h-auto flex items-center justify-between px-12 py-4 text-center">
-      <img :src="logoDark" alt="Parking" class="h-56 w-56">
-      <ol class="hidden md:flex items-center justify-center gap-4">
-        <li v-for="link, index in links" :key="index" class="text-inherit cursor-pointer"><a :href="link.href">{{ link.title }}</a></li>
+    <main class="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 text-gray-100 flex flex-col">
+    <header class="w-full h-auto flex items-center justify-between px-4 md:px-12 py-4 backdrop-blur-sm">
+      <img :src="logoLight" alt="Parking" class="h-32 md:h-40 w-auto">
+      <ol class="hidden md:flex items-center justify-center gap-6">
+        <li v-for="link, index in links" :key="index" class="hover:text-indigo-300 transition-colors">
+          <a :href="link.href" class="px-3 py-2 rounded-lg hover:bg-indigo-900/30">{{ link.title }}</a>
+        </li>
       </ol>
-      <router-link to="/app" class="relative px-6 py-3 bg-black text-white rounded-lg overflow-hidden border-2 border-transparent hover:border-purple-500 transition-all duration-300 hover:shadow-[0_0_15px_5px_rgba(168,85,247,0.5)]">
+      <router-link 
+        to="/app" 
+        class="relative px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all duration-300 shadow-lg hover:shadow-indigo-500/20"
+      >
         Comenzar
       </router-link>
     </header>
-    <section id="hero" class="flex-grow min-h-96 flex flex-col md:flex-row items-center justify-around">
-        <div class="flex flex-col gap-6">
-          <div>
-            <span class="border rounded-lg text-center py-2 px-6 cursor-grab">Bienvenidos &wedbar;</span>
-          </div>
-          <h1 class="font-bold text-4xl">Sistema de Estacionamiento <strong>Parking</strong></h1>
-          <p>Facilita y administra tu tiempo de manera mas eficiente</p>
-          <div class="buttons flex items-center justify-between ">
-            <router-link to="/register" class="rounded-lg px-4 py-2 border shadow-lg font-semibold ">
-              Registrarse
-            </router-link>
-            <router-link to="/login" class="bg-white rounded-lg px-4 py-2 shadow-lg font-semibold">
-              Iniciar Sección
-            </router-link>         
-          </div>
+
+    <section id="hero" class="flex-grow flex flex-col md:flex-row items-center justify-center md:justify-around px-6 md:px-12 gap-8 md:gap-16 py-12">
+      <div class="flex flex-col items-center md:items-start gap-6 max-w-2xl">
+        <div>
+          <span class="inline-block border border-indigo-400 text-indigo-300 rounded-lg text-center py-2 px-6 text-sm font-medium">
+            Bienvenidos &wedbar;
+          </span>
         </div>
-      <div>
-        <img :src="parking" class="w-full h-full">
+        
+        <h1 class="font-bold text-4xl md:text-5xl text-center md:text-left leading-tight">
+          Sistema de Estacionamiento <br>
+          <strong class="text-indigo-300">Parking</strong>
+        </h1>
+        
+        <p class="text-lg text-gray-300 text-center md:text-left">
+          Facilita y administra tu tiempo de manera más eficiente
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+          <router-link 
+            to="/register" 
+            class="rounded-lg px-6 py-3 border-2 border-indigo-400 text-indigo-100 hover:bg-indigo-900/40 transition-colors text-center font-medium shadow-md"
+          >
+            Registrarse
+          </router-link>
+          <router-link 
+            to="/login" 
+            class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-6 py-3 shadow-lg font-medium text-center transition-colors"
+          >
+            Iniciar Sesión
+          </router-link>         
+        </div>
+      </div>
+      
+      <div class="relative w-full max-w-xl">
+        <img :src="parking" class="w-full h-auto rounded-xl shadow-2xl border border-gray-700/50">
+        <div class="absolute inset-0 rounded-xl shadow-[inset_0_0_60px_20px_rgba(79,70,229,0.3)] pointer-events-none"></div>
       </div>
     </section>
 
