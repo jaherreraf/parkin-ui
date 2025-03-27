@@ -13,9 +13,10 @@ import Today from '@/components/Today.vue';
 
 import VehicleManagement from '@/components/VehicleManagement.vue';
 import Movements from '@/components/Movements.vue';
+import Map from '@/components/Map.vue';
 
 const activator = ref([{title:"Movimientos" , img: wallet},{title:"Operaciones" , img:car},{title:"Paso a paso" , img:map}])
-const indexActivator = ref(0)
+const indexActivator = ref(null)
 const user = ref(JSON.parse(localStorage.getItem('user')) || null)
 const plates = ref(['AEJ62R', 'XYZ123', 'ABC456'])
 function handleActivator(index){
@@ -191,10 +192,8 @@ function closeSection(){
               v-else-if="indexActivator==2"
               key="guide"
               class="bg-gray-50 rounded-lg border border-gray-200 w-full h-full flex items-center justify-center"
-            >                 
-              <span class="text-gray-500 font-medium text-xl text-center max-w-md px-4">
-                Guía paso a paso
-              </span>
+            >              
+              <Map/>   
             </div>
           </transition>
         </div>
@@ -267,14 +266,13 @@ function closeSection(){
                   <VehicleManagement/>
                 </div>
 
+
                 <div 
                   v-else-if="indexActivator==2"
                   key="guide"
                   class="bg-gray-50 rounded-lg border border-gray-200 w-full h-full flex items-center justify-center"
-                >                 
-                  <span class="text-gray-500 font-medium text-xl text-center max-w-md px-4">
-                    Guía paso a paso
-                  </span>
+                >    
+                  <Map/>
                 </div>
               </transition>
             </div>
