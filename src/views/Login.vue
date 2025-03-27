@@ -40,12 +40,15 @@
       return
     }
     Array.from(users.value).forEach(user =>{
-      if(user.username == identification.value || user.email==identification.value || user.identity_number==identification.value || user.phone_number==identification.value){
+      if(user.username == identification.value || user.identity_number==identification.value){
         exists = true
         data_user  = user
       }
     })
-    if(!exists)showNotification("Ningun usuario tiene esa identificación", 'warning')
+    if(!exists){
+      showNotification("Ningun usuario tiene esa identificación", 'warning')
+      return
+    }
     try{
         const response = await axios.post('http://127.0.0.1:8000/login', {
           identity_number: identification.value,
@@ -89,7 +92,7 @@
               class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-violet-900 text-md transition-all transform origin-left"
               for="id"
             >
-              Usuario o identificación
+              Cédula
             </label>
           </div>
           <!-- Campo de contraseña -->
