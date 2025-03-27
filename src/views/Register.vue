@@ -44,13 +44,13 @@
   const validatePhone = (phone) => {
     if (!phone) return 'El teléfono es requerido'
     if (!/^\d+$/.test(phone)) return 'Solo números'
-    if (phone.length < 10) return 'Mínimo 10 dígitos'
+    if (parseInt(phone) < 1000000000 || parseInt(phone) >9999999999 ) return 'Mínimo 10 dígitos'
     return ''
   }
-
   const validateIdentification = (id) => {
     if (!id) return 'La identificación es requerida'
     if (!/^\d+$/.test(id)) return 'Solo números'
+    if(parseInt(id)<1000 || parseInt(id)>1000000000 ) return "Cantidad de dígitos errónea"
     return ''
   }
 
