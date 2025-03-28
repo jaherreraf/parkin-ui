@@ -13,7 +13,7 @@ import Timeline from '@/components/Timeline.vue'
 const links = ref([
   {title:"Inicio", href:"#hero"},
   {title:"Proposito", href:"#purpose"},
-  {title:"Contacto", href:"#contact"},
+  {title:"Fundadores", href:"#founder"},
 ])
 
 const isMenuOpen = ref(false)
@@ -91,55 +91,11 @@ const isMenuOpen = ref(false)
         <Timeline />
       </div>
     </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-16 md:py-24 bg-blue-100">
-      <div class="container mx-auto px-4 max-w-4xl text-center">
-        <h2 class="text-3xl md:text-4xl font-bold text-blue-900 mb-6">
-          Contáctanos
-        </h2>
-        
-        <div class="bg-white rounded-xl shadow-md p-8 md:p-12 max-w-2xl mx-auto">
-          <form class="space-y-6">
-            <div class="grid md:grid-cols-2 gap-6">
-              <div>
-                <label for="name" class="block text-left text-gray-700 mb-2">Nombre</label>
-                <input 
-                  type="text" 
-                  id="name" 
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-              </div>
-              <div>
-                <label for="email" class="block text-left text-gray-700 mb-2">Email</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-              </div>
-            </div>
-            
-            <div>
-              <label for="message" class="block text-left text-gray-700 mb-2">Mensaje</label>
-              <textarea 
-                id="message" 
-                rows="4"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              ></textarea>
-            </div>
-            
-            <button 
-              type="submit"
-              class="w-full md:w-auto px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300"
-            >
-              Enviar Mensaje
-            </button>
-          </form>
-        </div>
-      </div>
+    <!--founder Secton-->
+    <section class="w-screen h-dvh">
+      <span>Fundadores</span>
+      
     </section>
-
     <!-- Footer -->
     <footer class="bg-blue-900 text-white py-12">
       <div class="container mx-auto px-4">

@@ -1,305 +1,240 @@
 <script setup>
-import { RouterLink } from 'vue-router';
-import { ref } from 'vue';
+  import { RouterLink } from 'vue-router';
+  import { ref } from 'vue';
 
-import logo from "@/assets/parking-light.svg"
-import car from "@/assets/car.svg"
-import wallet from "@/assets/wallet.svg"
-import map from "@/assets/map.svg"
-import userImg from "@/assets/user.svg"
-import incognito from "@/assets/user-secret-solid.svg"
-import arrow from '@/assets/right-from.svg'
-import Today from '@/components/Today.vue';
+  import logo from "@/assets/parking-light.svg"
+  import car from "@/assets/car.svg"
+  import wallet from "@/assets/wallet.svg"
+  import map from "@/assets/map.svg"
+  import userImg from "@/assets/user.svg"
+  import incognito from "@/assets/user-secret-solid.svg"
+  import arrow from '@/assets/right-from.svg'
 
-import VehicleManagement from '@/components/VehicleManagement.vue';
-import Movements from '@/components/Movements.vue';
-import Map from '@/components/Map.vue';
+  import { AdjustmentsHorizontalIcon } from '@heroicons/vue/24/outline'
+  import { PhoneIcon } from '@heroicons/vue/24/outline';
+  import { InboxIcon } from '@heroicons/vue/24/outline';
+  import { IdentificationIcon } from '@heroicons/vue/24/outline';
+  import { TruckIcon } from '@heroicons/vue/24/outline';
 
-const activator = ref([{title:"Movimientos" , img: wallet},{title:"Operaciones" , img:car},{title:"Paso a paso" , img:map}])
-const indexActivator = ref(null)
-const user = ref(JSON.parse(localStorage.getItem('user')) || null)
-const plates = ref(['AEJ62R', 'XYZ123', 'ABC456'])
-function handleActivator(index){
-  indexActivator.value = index
-}
-function closeSection(){
-  localStorage.removeItem('user')
-  window.location.href = "/app";
-}
+  import Today from '@/components/Today.vue';
+  import VehicleManagement from '@/components/VehicleManagement.vue';
+  import Movements from '@/components/Movements.vue';
+  import Map from '@/components/Map.vue';
+
+  const activator = ref([{title:"Movimientos", img: wallet},{title:"Operaciones", img:car},{title:"Paso a paso", img:map}])
+  const indexActivator = ref(null)
+  const user = ref(JSON.parse(localStorage.getItem('user')) || null)
+  const plates = ref(['AEJ62R', 'XYZ123', 'ABC456'])
+
+  function handleActivator(index){
+    indexActivator.value = indexActivator.value === index ? null : index
+  }
+  function logout(){
+    localStorage.removeItem('user');
+    window.location.reload();
+  }
 </script>
 
 <template>
-  <div class="min-h-screen w-screen flex flex-col md:flex-row bg-gray-50"> 
-    <!-- Sidebar Mobile (Bottom) -->
-    <aside class="fixed bottom-0 left-0 right-0 md:hidden w-full bg-gray-800 border-t border-gray-700 z-10">
-      <ul class="flex items-center justify-around py-3 px-4">
+  <div class="min-h-screen w-screen flex flex-col md:flex-row bg-gray-50 text-lg">
+    <!-- Sidebar -->
+    <aside class="fixed md:static bottom-0 left-0 right-0 z-10 flex md:flex-col w-full md:min-h-screen md:h-full md:w-56 bg-indigo-950 items-center justify-between py-4 md:py-8 border-t md:border-r border-indigo-700">
+      <img :src="logo" class="hidden md:block w-40 h-auto">
+      <ul class="w-full flex md:flex-col items-center justify-center gap-4 md:gap-6 px-4">
         <li 
-          v-for="link, index in activator" :key="index" @click="handleActivator(index)"
-            :title="link.title"
-          :class="['p-3 w-14 h-14 text-center  rounded-xl cursor-pointer transition-all duration-300 hover:bg-blue-600 hover:shadow-lg', 
-            indexActivator == index? 'bg-blue-600 shadow-lg': 'bg-gray-700'
-          ]" 
-        >
-          <img :src="link.img" :alt="link.title" class="w-full h-full filter invert">
-        </li>
-      </ul>
-    </aside>
-    <!-- Sidebar Desktop -->
-    <aside class="hidden md:flex md:flex-col w-56 bg-gray-800 items-center justify-between py-8 border-r border-gray-700">
-      <img :src="logo" class="w-40 h-auto">
-      <ul class="w-full flex flex-col items-center justify-center gap-6 px-4">
-        <li 
-          v-for="link, index in activator" :key="index"
-          :title="link.title" 
+          v-for="(link, index) in activator" 
+          :key="index"
           @click="handleActivator(index)"
-          :class="['p-4 w-16 h-16 text-center  rounded-xl cursor-pointer transition-all duration-300 hover:bg-blue-600 hover:shadow-lg',
-          indexActivator == index? 'bg-blue-600 shadow-lg':'bg-gray-700']" 
+          :class="[
+            'p-3 md:p-4 w-12 h-12 md:w-16 md:h-16 text-center rounded-xl cursor-pointer transition-all duration-300',
+            indexActivator === index ? 'bg-indigo-400 shadow-lg' : 'bg-indigo-700 hover:bg-indigo-4400'
+          ]" 
           >
           <img :src="link.img" :alt="link.title" class="w-full h-full filter invert">
         </li>
       </ul>
-      <button class="text-center p-3 rounded-xl cursor-pointer hover:bg-gray-700 transition-colors duration-300">
+      <button class="hidden md:flex text-center p-3 rounded-xl cursor-pointer hover:bg-indigo-700 transition-colors duration-300">
         <router-link to="/">
           <img :src="arrow" class="w-8 h-8 rotate-180 filter invert opacity-70 hover:opacity-100">
         </router-link>
       </button>
     </aside>
-    <!--Main Content Mobile-->
-    <div class="md:hidden w-screen h-dvh mb-4 flex flex-col">
-      <!--User mobile-->
-      <section class="flex items-center justify-between  w-screen p-4" v-if="user!==null">
-        <img :src="userImg" class="w-18 h-18">
-        <div class="flex flex-col items-center justify-center gap-2">
-          <div class="flex flex-col items-center justify-center" v-if="user!==null">
-            Hello, {{user.username}}
-            <Today></Today>
-          </div>
-          <div class="grid grid-flow-row items-center justify-between bg-gray-50 rounded-lg border border-gray-200 p-4">
-            <span class="text-xl font-semibold text-gray-800"> Cédula: {{ user.identity_number }}</span>
-            <span class="text-gray-500">Email: {{ user.email }}</span>
-            <span class="text-gray-500">teléfono: {{ user.phone_number }}</span>
-          </div>
-          <button @click="closeSection" class="relative px-6 py-3 bg-black text-white rounded-lg overflow-hidden border-2 border-transparent hover:border-purple-500 transition-all duration-300 hover:shadow-[0_0_15px_5px_rgba(168,85,247,0.5)]">Cerrar Sección</button>
-        </div>
-        <button class="text-center p-3 rounded-xl cursor-pointer  border hover:bg-gray-700 transition-colors duration-300">
-          <router-link to="/">
-            <img :src="arrow" class="w-12 h-12 rotate-180">
-          </router-link>
-        </button>
-      </section>
-      <section class="flex items-center justify-between  w-screen p-4" v-else>
-        <img :src="incognito" class="w-18 h-18">
-        <div>
-          <div class="flex flex-col items-center justify-center">
-            Bienvenido, usuario
-            <Today></Today>
-          </div>
-        </div>
-        <button class="text-center p-3 rounded-xl cursor-pointer  border hover:bg-gray-700 transition-colors duration-300">
-          <router-link to="/">
-            <img :src="arrow" class="w-12 h-12 rotate-180">
-          </router-link>
-        </button>
-      </section>
-     <!-- Vehicle plate mobile -->
-    <div class="w-full bg-slate-50 py-4">
-      <!-- Título con padding para separación -->
-      <div class="px-4 pb-2">
-        <span class="font-bold text-lg text-slate-800 flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-          </svg>
-          Mis Vehículos
-        </span>
-      </div>
-      <!-- Contenedor de placas con scroll -->
-      <div class="relative w-full h-40 overflow-x-auto scrollbar-hide px-4">
-        <div class="flex gap-4 w-max pb-4">
-          <div 
-            v-for="(plate, index) in plates" 
-            :key="index"
-            class="grid place-content-center p-3 bg-gradient-to-br from-green-400 to-green-500 shadow-md w-40 h-20 rounded-lg flex-shrink-0"
-          >
-            <span class="text-white font-bold text-lg tracking-wider">{{ plate }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-      <!-- Wallet Mobile -->
-      <div class="w-full flex items-center justify-center px-4">
-        <div class="relative bg-gradient-to-br from-purple-600 to-indigo-700 w-full max-w-md h-64 shadow-2xl rounded-2xl text-white overflow-hidden">
-          <!-- Efecto de brillo -->
-          <div class="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent"></div>
-          
-          <!-- Logo y título -->
-          <div class="absolute top-5 left-5 flex items-center gap-3">
-            <img :src="wallet" alt="Wallet" class="h-10 w-10 filter invert">
-            <span class="font-bold text-xl tracking-wide">Billetera Digital</span>
-          </div>
-          
-          <!-- Texto central destacado -->
-          <div class="absolute inset-0 flex items-center justify-center px-8 text-center">
-            <p class="text-lg font-medium bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
-              Gestiona tus pagos de forma rápida y segura
-            </p>
-          </div>      
-          <!-- Saldo -->
-          <div class="absolute bottom-5 left-5 right-5 flex justify-between items-end">
-            <div>
-              <p class="text-sm opacity-80">Saldo disponible</p>
-              <p class="text-3xl font-bold">Bs <span class="animate-pulse" v-if="user!==null">{{ user.balance }}</span><span class="animate-pulse" v-else>----</span></p>
-            </div>
-          </div>
-          <!-- Patrón decorativo -->
-          <div class="absolute bottom-0 right-0 opacity-20">
-            <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="80" cy="80" r="80" fill="white"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-      <!--Main content Mobile-->
-      <div class="font-m-plus-2 h-full my-6 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col">
-        <h3 class="text-lg font-medium text-gray-700 p-6 pb-4 border-b border-gray-200">Actividad Reciente</h3>
-        <div class="flex-1 p-6 pt-4">
-          <transition name="fade-slide" mode="out-in">
-            <div 
-              v-if="indexActivator==null"
-              key="main"
-              class="bg-gray-50 rounded-lg border border-gray-200 w-full h-full flex items-center justify-center"
-            >                 
-              <span class="text-gray-500 font-medium text-xl text-center max-w-md px-4">
-                Área de visualización principal
-              </span>
-            </div>
-            <div 
-              v-else-if="indexActivator==0"
-              key="movements"
-              class="bg-gray-50 rounded-lg border border-gray-200 w-full h-full flex items-center justify-center"
-            >                 
-              <Movements/>
-            </div>
 
-            <div 
-              v-else-if="indexActivator==1"
-              key="operations"
-              class="bg-gray-50 rounded-lg border border-gray-200 w-full h-full flex items-center justify-center"
-            >           
-              <VehicleManagement/>
-            </div>
-
-            <div 
-              v-else-if="indexActivator==2"
-              key="guide"
-              class="bg-gray-50 rounded-lg border border-gray-200 w-full h-full flex items-center justify-center"
-            >              
-              <Map/>   
-            </div>
-          </transition>
-        </div>
-      </div>
-    </div>
-    <!-- Main Content Desktop -->
-    <div class="hidden md:flex flex-1  flex-col overflow-auto pb-0">
-      <div class="flex h-full w-full items-center justify-center p-6 bg-gray-100">
-        <div class="grid h-full w-full  grid-cols-4grid-rows-4  gap-4 p-0">
-          <!-- User Profile Card Desktop -->
-          <div class="font-m-plus-2 col-span-3 row-span-1 bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-x-6
-          grid grid-cols-2 place-content-center relative">
-            <div class="flex justify-center items-center gap-2 bg-gray-50 rounded-lg border border-gray-200 p-4" v-if="user !==null">
-              <img :src="userImg" class="w-16 h-16 rounded-full border-2 border-blue-500 p-1">
-              <div class="flex flex-col">
-                <span class="text-xl font-semibold text-gray-800">Usuario: {{ user.username }}</span>
-                <span class="text-gray-500">Email: {{ user.email }}</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="text-xl font-semibold text-gray-800">Cédula de identidad: {{ user.identity_number }}</span>
-                <span class="text-gray-500">Número de teléfono: {{ user.phone_number }}</span>
-              </div>
-              <button @click="closeSection" class="relative px-6 py-3 bg-black text-white rounded-lg overflow-hidden border-2 border-transparent hover:border-purple-500 transition-all duration-300 hover:shadow-[0_0_15px_5px_rgba(168,85,247,0.5)]">Cerrar Sección</button>
-            </div>
-            <div v-else>
-              <img :src="incognito" class="w-16 h-16 rounded-full border-2 border-blue-500 p-1">
-              <div>
-                  <span>Te encuentras en estos momentos en modo incógnito</span>                
-              </div>
-            </div>
-            <div class="flex justify-center items-center gap-2 bg-gray-50 rounded-lg border border-gray-200 p-4">
-              <span>Vehículos</span>
-            </div>
-            <Today class="ml-auto absolute top-2 right-2"></Today>
-          </div>
-          <!-- Wallet Card -->
-          <div class="relative font-m-plus-2 col-span-1 row-span-1 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col items-center justify-center p-4">
-            <span class="absolute top-4 left-4 text-4xl">WALLET</span>
-            <p>Revisa tu saldo Aquí.</p>
-            <span class="absolute bottom-4 right-4 text-4xl">SALDO <strong v-if="user!==null" class="animate-pulse">BS {{ user.balance }}</strong><strong v-else class="animate-pulse">BS ----</strong></span>
-          </div>
-          <!-- Main Content Area -->
-          <div class="font-m-plus-2 col-span-4 row-span-3 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col">
-            <h3 class="text-lg font-medium text-gray-700 p-6 pb-4 border-b border-gray-200">Actividad Reciente</h3>
-            <div class="flex-1 p-6 pt-4">
-             <!--- Manejador de diferentes actividades con animación -->
-              <transition name="fade-slide" mode="out-in">
-                <div 
-                  v-if="indexActivator==null"
-                  key="main"
-                  class="bg-gray-50 rounded-lg border border-gray-200 w-full h-full flex items-center justify-center"
-                >                 
-                  <span class="text-gray-500 font-medium text-xl text-center max-w-md px-4">
-                    Área de visualización principal
+    <!--Main Content-->
+    <main class="w-full flex-1 md:overflow-auto pt-0 pb-20 md:pb-0">
+      <div class="h-full w-full p-0 md:p-6 bg-slate-100">
+        <div class="grid h-full w-full grid-cols-1 md:grid-cols-4 items-start justify-center grid-rows-[auto_auto_1fr] md:grid-rows-[auto_1fr] gap-4 p-0">
+          <!--User-->
+          <!-- User Section - Versión corregida -->
+        <section id="data-user" class="font-m-plus-2 w-full col-span-1 md:col-span-3 row-span-1 flex flex-col items-start justify-center bg-white rounded-none md:rounded-xl shadow-sm border-0 md:border border-gray-200 p-4 md:p-6 ">
+          <Today class=" md:bg-white rounded-xl z-10 w-screen md:w-auto"/>
+          <!-- Usuario logueado -->
+          <div v-if="user!=null" id="user" class="w-full h-full flex flex-col md:flex-row items-center justify-between gap-4">
+            <!-- Primera columna (info usuario) -->
+            <div class="w-full md:w-1/2 h-full min-h-[130px] md:bg-slate-100 rounded-xl md:p-4 flex items-center gap-4 relative">
+              <img :src="userImg" class="w-16 h-16 rounded-full border-2 border-indigo-500 p-2 absolute left-4 top-4 md:static">
+              <div class="space-y-2 ml-20 md:ml-0 w-full">
+                <h2 class="text-lg font-bold w-full text-end md:text-center">Bienvenido, <span class="text-indigo-600">{{ user.username }}</span></h2>
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-2  ml-4 md:ml-0 mt-4">
+                  <span class="flex items-center gap-2 rounded-xl p-2 bg-indigo-100 text-indigo-700 text-sm max-w-56 md:mx-w-96">
+                    <PhoneIcon class="h-5 w-5"/> {{ user.phone_number }}
+                  </span>
+                  <span class="flex items-center gap-2 rounded-xl p-2 bg-indigo-100 text-indigo-700 text-sm max-w-56 md:mx-w-96">
+                    <InboxIcon class="h-5 w-5"/> {{ user.email }}
+                  </span>
+                  <span class="flex items-center gap-2 rounded-xl p-2 bg-indigo-100 text-indigo-700 text-sm max-w-56 md:mx-w-96">
+                    <IdentificationIcon class="h-5 w-5"/> {{ user.identity_number }}
                   </span>
                 </div>
+                <div class="flex items-center justify-center w-full">
+                  <button @click="logout" class="px-4 py-2 w-full max-w-96 text-center bg-indigo-600 rounded-lg text-white font-semibold hover:bg-indigo-500 transition-all">
+                    Cerrar Sección
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Segunda columna (vehículos) -->
+            <div class="w-full md:w-1/2 h-full min-h-[130px] bg-slate-100 rounded-xl p-4 flex flex-col">
+              <div class="flex justify-start items-center mb-4">
+                <h3 class="font-bold flex items-center gap-2">
+                  <TruckIcon class="h-6 w-6"/> Mis vehículos
+                </h3>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <span v-for="plate in plates" :key="plate" 
+                      class="bg-white rounded-lg p-2 text-center font-mono font-bold">
+                  {{ plate }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Modo incógnito -->
+          <div v-else id="user-incognito" class="w-full flex flex-col md:flex-row items-center justify-between gap-6 p-4 md:bg-slate-100 rounded-xl">
+            <div class="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
+              <img :src="incognito" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-indigo-500 p-1">
+              <p class="text-gray-700">
+                Estás en modo incógnito. <span class="block md:inline">Disfruta de funciones básicas o</span>
+                <span class="text-indigo-600 font-medium">regístrate para acceder a todo el contenido</span>.
+              </p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+              <router-link to="register" 
+                  class="px-4 py-2 w-full min-w-56 text-center bg-indigo-600 rounded-lg text-white font-semibold hover:bg-indigo-500 transition-all">
+                  Registrarse
+              </router-link>
+              <router-link to="/login" 
+                  class="px-4 py-2 w-full min-w-56 text-center border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-all">
+                  Iniciar sesión
+              </router-link>
+            </div>
+          </div>
+        </section>
+          <!-- Wallet -->
+          <div id="wallet" class="md:col-start-4 md:row-start-1 col-span-1 row-span-1 flex items-center justify-center h-full p-4 md:p-0">
+            <div class="relative bg-gradient-to-br from-purple-600 to-indigo-700 w-full h-full min-h-[200px] md:min-h-full shadow-2xl rounded-2xl text-white overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent"></div>
+              
+              <div class="absolute top-5 left-5 flex items-center gap-3">
+                <img :src="wallet" alt="Wallet" class="h-8 w-8 md:h-10 md:w-10 filter invert">
+                <span class="font-bold text-lg md:text-xl tracking-wide">Billetera Digital</span>
+              </div>
+              
+              <div class="absolute inset-0 flex items-center justify-center px-4 md:px-8 text-center">
+                <p class="text-base md:text-lg font-medium bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 md:px-6 md:py-3">
+                  Gestiona tus pagos de forma rápida y segura
+                </p>
+              </div>
+              
+              <div class="absolute bottom-5 left-5 right-5 flex justify-between items-end">
+                <div>
+                  <p class="text-xs md:text-sm opacity-80">Saldo disponible</p>
+                  <p class="text-2xl md:text-3xl font-bold">Bs <span class="animate-pulse" v-if="user!=null">{{ user.balance }}</span><span class="animate-pulse" v-else>----</span></p>
+                </div>
+              </div>
+              
+              <div class="absolute bottom-0 right-0 opacity-20">
+                <svg width="120" height="120" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="80" cy="80" r="80" fill="white"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <!--Activities-->
+          <div id="activities" class="md:col-span-4 row-span-1 md:row-span-1 h-full w-full bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col">
+            <div class="flex items-center justify-start gap-4 border-b border-gray-200 w-full p-4">
+              <AdjustmentsHorizontalIcon class="h-6 w-6 text-indigo-500" />
+              <span class="font-semibold text-slate-500 text-lg">Actividades</span>
+            </div>
+            <div class="flex-1 w-full p-2 h-full">
+              <transition name="fade" mode="out-in">
                 <div 
-                  v-else-if="indexActivator==0"
-                  key="movements"
-                  class="bg-gray-50 rounded-lg border border-gray-200 w-full h-full flex items-center justify-center"
+                  v-if="indexActivator===null"
+                  key="main"
+                  class="h-full w-full bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center"
                 >                 
-                  <Movements/>
+                  <span class="text-gray-500 font-medium text-lg text-center max-w-md px-4">
+                    Selecciona una opción para comenzar
+                  </span>
                 </div>
-
-                <div 
-                  v-else-if="indexActivator==1"
-                  key="operations"
-                  class="bg-gray-50 rounded-lg border border-gray-200 w-full h-full flex items-center justify-center"
-                >          
-                  <VehicleManagement/>
-                </div>
-
-
-                <div 
-                  v-else-if="indexActivator==2"
-                  key="guide"
-                  class="bg-gray-50 rounded-lg border border-gray-200 w-full h-full flex items-center justify-center"
-                >    
-                  <Map/>
-                </div>
+                <Movements v-else-if="indexActivator===0" key="movements" class="h-full" />
+                <VehicleManagement v-else-if="indexActivator===1" key="operations" class="h-full" />
+                <Map v-else-if="indexActivator===2" key="guide" class="h-full" />
               </transition>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
 <style>
-  /* Efectos adicionales */
-  .hover-scale {
-    transition: transform 0.2s ease;
-  }
-  .hover-scale:hover {
-    transform: scale(1.02);
-  }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
 
-  .filter.invert {
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
-  }
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 
-  /* Asegurar que el contenido no quede detrás del sidebar móvil */
-  @media (max-width: 767px) {
-    .flex-1 {
-      padding-bottom: 5rem; /* Ajusta según la altura de tu sidebar móvil */
-    }
+/* Asegurar scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Mejorar scroll en activities */
+#activities > div:last-child {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f3f4f6;
+}
+
+#activities > div:last-child::-webkit-scrollbar {
+  width: 6px;
+}
+
+#activities > div:last-child::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+#activities > div:last-child::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
+  border-radius: 3px;
+}
+
+/* Ajustes para mobile */
+@media (max-width: 767px) {
+  #data-user, #wallet {
+    height: auto;
+    min-height: 180px;
   }
+  
+  #activities {
+    min-height: 300px;
+  }
+}
 </style>

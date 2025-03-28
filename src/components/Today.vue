@@ -1,37 +1,34 @@
-<template>
-    <div class="p-6">
-      <div class="text-lg flex items-center justify-center gap-2">
-        <span class="font-semibold">{{ year }},</span>
-        <span class="font-semibold">{{ month }}</span>
-        <span class="font-semibold">{{ day }}</span>
-      </div>
-    </div>
-  </template>
+<script setup>
+  import { ref, onMounted } from 'vue'
+  import { ClockIcon } from '@heroicons/vue/24/outline'
   
-  <script setup>
-  import { ref, onMounted } from 'vue';
+  const day = ref(null)
+  const month = ref(null)
+  const year = ref(null)
   
-  // Reactive variables to store the date
-  const day = ref(null);
-  const month = ref(null);
-  const year = ref(null);
-  
-  // Array with month names in Spanish
   const months = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-  ];
+  ]
   
-  // Function to get the current date
   function getCurrentDate() {
     const currentDate = new Date();
-    day.value = String(currentDate.getDate()).padStart(2, '0'); // Day with two digits
-    month.value = months[currentDate.getMonth()]; // Month name in Spanish
-    year.value = currentDate.getFullYear(); // Year
+    day.value = String(currentDate.getDate()).padStart(2, '0')
+    month.value = months[currentDate.getMonth()]
+    year.value = currentDate.getFullYear()
   }
   
-  // Call the function when the component is mounted
   onMounted(() => {
-    getCurrentDate();
-  });
-  </script>
+    getCurrentDate()
+  })
+</script>
+<template>
+  <div class="p-6">
+    <div class="text-lg flex items-center justify-center gap-2">
+      <ClockIcon class="h-5 w-5" ></ClockIcon>
+      <span class="font-semibold">{{ year }},</span>
+      <span class="font-semibold">{{ month }}</span>
+      <span class="font-semibold">{{ day }}</span>
+    </div>
+  </div>
+</template>  

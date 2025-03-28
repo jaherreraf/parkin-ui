@@ -144,21 +144,21 @@
 <template>
   <div class="w-screen h-dvh bg-violet-100 grid place-content-start md:place-content-center">
     <!-- Contenedor principal con dos columnas -->
-    <div id="container" class="bg-violet-500 md:w-[700px] h-dvh md:h-[650px] grid md:grid-cols-2 md:rounded-2xl overflow-hidden">
+    <div id="container" class="bg-indigo-500 md:w-[700px] h-dvh md:h-[650px] grid md:grid-cols-2 md:rounded-2xl overflow-hidden">
       <!-- Columna 1: Formulario de Registro -->
       <div class="bg-white rounded-l-2xl  md:h-full px-12 py-8 flex flex-col items-center justify-center gap-8 row-start-2 md:row-start-1">
-        <h1 class="font-black text-4xl text-violet-900">Registrarse</h1>
+        <h1 class="font-black text-4xl text-indigo-900">Registrarse</h1>
         <div class="w-full max-w-sm space-y-6">
           <!-- Campo de identificación -->
           <div class="relative">
             <input
-              class="w-full h-18 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-violet-900 rounded-md px-3 py-2 pt-6 transition duration-300 ease focus:outline-none focus:border-violet-950 hover:border-slate-300 shadow-sm focus:shadow"
+              class="w-full h-18 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-indigo-900 rounded-md px-3 py-2 pt-6 transition duration-300 ease focus:outline-none focus:border-indigo-950 hover:border-slate-300 shadow-sm focus:shadow"
               name="username"
               id="username"
               v-model="user.username"
             />
             <label
-              class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-violet-900 text-md transition-all transform origin-left"
+              class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-indigo-900 text-md transition-all transform origin-left"
               for="username"
             >
               Nombre de usuario
@@ -171,13 +171,13 @@
           </div>
           <div class="relative">
             <input
-              class="w-full h-18 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-violet-900 rounded-md px-3 py-2 pt-6 transition duration-300 ease focus:outline-none focus:border-violet-950 hover:border-slate-300 shadow-sm focus:shadow"
+              class="w-full h-18 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-indigo-900 rounded-md px-3 py-2 pt-6 transition duration-300 ease focus:outline-none focus:border-indigo-950 hover:border-slate-300 shadow-sm focus:shadow"
               name="email"
               id="email"
               v-model="user.email"
             />
             <label
-              class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-violet-900 text-md transition-all transform origin-left"
+              class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-indigo-900 text-md transition-all transform origin-left"
               for="email"
             >
               Correo Electrónico
@@ -190,13 +190,13 @@
           </div>
           <div class="relative">
             <input
-              class="w-full h-18 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-violet-900 rounded-md px-3 py-2 pt-6 transition duration-300 ease focus:outline-none focus:border-violet-950 hover:border-slate-300 shadow-sm focus:shadow"
+              class="w-full h-18 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-indigo-900 rounded-md px-3 py-2 pt-6 transition duration-300 ease focus:outline-none focus:border-indigo-950 hover:border-slate-300 shadow-sm focus:shadow"
               name="phone"
               id="phone"
               v-model="user.phone_number"
             />
             <label
-              class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-violet-900 text-md transition-all transform origin-left"
+              class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-indigo-900 text-md transition-all transform origin-left"
               for="phone"
             >
               Número de telefono
@@ -209,13 +209,13 @@
           </div>
           <div class="relative">
             <input
-              class="w-full h-18 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-violet-900 rounded-md px-3 py-2 pt-6 transition duration-300 ease focus:outline-none focus:border-violet-950 hover:border-slate-300 shadow-sm focus:shadow"
+              class="w-full h-18 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-indigo-900 rounded-md px-3 py-2 pt-6 transition duration-300 ease focus:outline-none focus:border-indigo-950 hover:border-slate-300 shadow-sm focus:shadow"
               name="identification"
               id="identification"
               v-model="user.identity_number"
             />
             <label
-              class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-violet-900 text-md transition-all transform origin-left"
+              class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-indigo-900 text-md transition-all transform origin-left"
               for="identification"
             >
               identificación
@@ -229,14 +229,14 @@
           <!-- Campo de contraseña -->
           <div class="relative">
             <input
-              class="w-full h-18 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-violet-900 rounded-md px-3 py-2 pt-6 transition duration-300 ease focus:outline-none focus:border-violet-950 hover:border-slate-300 shadow-sm focus:shadow"
+              class="w-full h-18 bg-transparent placeholder:text-slate-400 text-indigo-700 text-sm border-2 border-indigo-900 rounded-md px-3 py-2 pt-6 transition duration-300 ease focus:outline-none focus:border-indigo-950 hover:border-slate-300 shadow-sm focus:shadow"
               type="password"
               name="password"
               id="password"
               v-model="user.password"
             />
             <label
-              class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-violet-900 text-md transition-all transform origin-left"
+              class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-indigo-900 text-md transition-all transform origin-left"
               for="password"
             >
               Contraseña
@@ -249,7 +249,7 @@
           </div>
         </div>
         <!-- Botón de Registrarse -->
-        <button class="bg-violet-950 hover:bg-violet-900 focus:bg-violet-900 focus:text-white hover:text-white transition-all duration-300 text-center font-black text-violet-50 py-3 px-6 rounded-xl cursor-pointer"
+        <button class="bg-indigo-950 hover:bg-indigo-900 focus:bg-indigo-900 focus:text-white hover:text-white transition-all duration-300 text-center font-black text-indigo-50 py-3 px-6 rounded-xl cursor-pointer"
         @click="submit"
         >
           Registrarse
@@ -259,18 +259,18 @@
       <div class="text-center p-12 flex flex-col items-center justify-center gap-4 text-white row-start-1 text-md">
         <h2 class="text-4xl font-bold text-center">Bienvenido a sección de registro</h2>
         <p>Crea tu cuenta ya mismo y poder disfrutar de la maxima experiencia que te ofrece esta app</p>
-        <span>¿Ya tienes una cuenta? <a href="/login" class="text-violet-200 hover:underline">Haz clic aquí y inicia sección.</a></span>
+        <span>¿Ya tienes una cuenta? <a href="/login" class="text-indigo-200 hover:underline">Haz clic aquí y inicia sección.</a></span>
         <small>Puedes continuar usando la app sin tener una cuenta. No contarás con todos los servicios.</small>
-        <button class="mt-4 bg-white text-violet-900 py-2 px-6 rounded-lg hover:bg-violet-50 transition-colors cursor-pointer">
+        <button class="mt-4 bg-white text-indigo-900 py-2 px-6 rounded-lg hover:bg-indigo-50 transition-colors cursor-pointer">
           <router-link to="/app">
             Ir a la app
           </router-link>
         </button>
       </div>
     </div>
-    <button class="fixed top-2 left-2 text-center p-4 bg-violet-50 rounded-xl cursor-pointer">
+    <button class="fixed top-2 left-2 text-center p-4 bg-indigo-50 rounded-xl cursor-pointer">
         <router-link to="/">
-            <img :src="arrow" class="w-12 h-12 rotate-180">
+            <img :src="arrow" class="w-8 h-8 md:w-12 md:h-12 rotate-180">
         </router-link>
     </button>
     <!-- Notificación dinámica -->
