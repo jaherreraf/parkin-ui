@@ -4,6 +4,10 @@ import axios from 'axios'
 export const dataBase = defineStore('dataBase', () => {
   const users = ref([])
   const vehicles = ref([])
+  const fees = ref([])
+  //const payment = ref([])
+  const record = ref([])
+  const notification = ref([])
   const dollar = ref(null)
   async function fetchUsers(){
     const response = await axios.get("http://127.0.0.1:8000/users")
@@ -11,12 +15,31 @@ export const dataBase = defineStore('dataBase', () => {
   }
   async function fetchVehicles(){
     const response = await axios.get("http://127.0.0.1:8000/vehicles")
-    vehicles.value = response.data
-    
+    vehicles.value = response.data 
   }
+  /*
+  async function fetchFees(){
+    const response = await axios.get("http://127.0.0.1:8000/fees")
+    fees.value = response.data 
+  }
+  async function fetchPayment(){
+    const response = await axios.get("http://127.0.0.1:8000/payment")
+    payment.value = response.data 
+  }
+  async function fetchRecord(){
+    const response = await axios.get("http://127.0.0.1:8000/record")
+    record.value = response.data 
+  }
+  async function fetchNotification(){
+    const response = await axios.get("http://127.0.0.1:8000/notification")
+    notification.value = response.data 
+  }
+    fetchFees  , fetchRecord , fetchNotification
+     fees , record , notification 
+    */
   async function fetchDollar(){
     const response = await axios.get("https://pydolarve.org/api/v1/dollar?page=bcv&monitor=usd")
     dollar.value = response.data
   }
-  return {users , vehicles , fetchUsers , fetchVehicles, fetchDollar, dollar}
+  return {users , vehicles,  dollar , fetchUsers , fetchVehicles,  fetchDollar}
 })

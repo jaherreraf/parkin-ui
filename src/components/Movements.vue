@@ -1,8 +1,12 @@
 <script setup>
-  import { ref } from 'vue'
+  import { ref , onMounted } from 'vue'
 
   import axios from 'axios'
-
+  import { dataBase } from '@/stores/database'
+  
+  const stores = dataBase()
+  const users = ref(stores.users)
+  const user = ref(null)
   const activator = ref(null)
   const payment = ref({amount:'', reference:''})
   const transfer = ref({amount:''  , bank:'', reference:''})
@@ -10,14 +14,54 @@
   function handleActivator(index) {
     activator.value = activator.value === index ? null : index
   }
+  function validateReference(reference){
+    if(!/^\d{9,14}$/.test(reference)) return "Número de referencia inválido"
+    return ""
+  }
+  function normalizeAndValidate(amount) {
+    // Reemplazar coma por punto para estandarizar
+    const normalized = amount.replace(',', '.');
+    
+    // Validar formato
+    if (!/^\d+(?:\.\d{1,2})?$/.test(normalized)) {
+      return { isValid: false, value: null };
+    }
+    
+    return { isValid: true, value: parseFloat(normalized) };
+  }
+
   async function handleTransfer(){
 
 
   }
   async function  handlePayment(){
-
-
+    let result = normalizeAndValidate(payment.value.amount)
+    if(validateReference(payment.value.reference)!="" || !result.isValid)
+      return
+    console.log('todo valido')
+    try{
+      await axios.post('http://127.0.0.1:8000/payment', {
+        id_user: user.value.identity_number,
+        method: "mobile payment",
+        phone_number: user.value.phone_number,
+        amount: parseFloat(payment.value.amount),
+        reference: payment.value.reference
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }catch(error){
+      console.log(error)
+    }
   }
+  onMounted(function(){
+    const identity_number = JSON.parse(localStorage.getItem('identity_number'))
+    Array.from(users.value).forEach((row)=>{
+      if(row.identity_number == parseInt(identity_number))
+        user.value = row
+    }) 
+  })
 </script>
 
 <template>
@@ -67,7 +111,6 @@
                 </div>
               </dl>
             </div>
-
             <div class="bg-blue-50 p-4 rounded-lg mb-4">
               <div class="flex items-center gap-2 mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">

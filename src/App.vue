@@ -6,6 +6,11 @@
   onMounted(function(){
     stores.fetchUsers()
     stores.fetchVehicles()
+    /*stores.fetchFees()
+    stores.fetchPayment()
+    stores.fetchRecord()
+    stores.fetchNotification()
+    */
     stores.fetchDollar()
   })
 </script>
