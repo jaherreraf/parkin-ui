@@ -1,11 +1,12 @@
 <script setup>
   import { ref } from 'vue'
   import { RouterLink } from 'vue-router'
-
-  import arrow from '@/assets/right-from.svg'
-
+  
   import { dataBase } from '@/stores/database'
   import axios from 'axios'
+  
+  import { ArrowLeftEndOnRectangleIcon } from '@heroicons/vue/24/outline'
+  
   const stores = dataBase()
   const users = ref(stores.users)
   const user = ref({username:'',email:'', phone_number:'',identity_number:'',password:''})
@@ -115,7 +116,7 @@
     errors.value = {username: '',email: '',phone: '',identification: '',password: '',general: ''}
     if (!validateForm()) return
     try{
-        const response = await axios.post('http://127.0.0.1:8000/users', {
+      await axios.post('http://127.0.0.1:8000/users', {
         ...user.value,
         user_type: 'user',
         phone_number: user.value.phone_number || null  // Enviar null si está vacío
@@ -124,7 +125,7 @@
           'Content-Type': 'application/json',
         },
       });
-      localStorage.setItem('user', JSON.stringify(user.value));
+      localStorage.setItem('identity_number', JSON.stringify(user.value.identity_number));
       window.location.href = "/app";
       showNotification('Usuario registrado con éxito', 'success')
         // Limpiar formulario después de registro exitoso
@@ -270,7 +271,7 @@
     </div>
     <button class="fixed top-2 left-2 text-center p-4 bg-indigo-50 rounded-xl cursor-pointer">
         <router-link to="/">
-            <img :src="arrow" class="w-8 h-8 md:w-12 md:h-12 rotate-180">
+            <ArrowLeftEndOnRectangleIcon  class="w-8 h-8 md:w-12 md:h-12 " />
         </router-link>
     </button>
     <!-- Notificación dinámica -->

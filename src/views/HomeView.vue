@@ -16,7 +16,6 @@ const links = ref([
   {title:"Fundadores", href:"#founder"},
 ])
 
-const isMenuOpen = ref(false)
 </script>
 
 <template>

@@ -1,10 +1,23 @@
 <script setup>
-import { ref } from 'vue'
-const activator = ref(null)
-const form = ref({amount:''  , bank:'', reference:''})
-function handleActivator(index) {
-  activator.value = activator.value === index ? null : index
-}
+  import { ref } from 'vue'
+
+  import axios from 'axios'
+
+  const activator = ref(null)
+  const payment = ref({amount:'', reference:''})
+  const transfer = ref({amount:''  , bank:'', reference:''})
+  
+  function handleActivator(index) {
+    activator.value = activator.value === index ? null : index
+  }
+  async function handleTransfer(){
+
+
+  }
+  async function  handlePayment(){
+
+
+  }
 </script>
 
 <template>
@@ -65,8 +78,49 @@ function handleActivator(index) {
               <p class="text-gray-700 mb-2">0414-1628885</p>
               <p class="text-sm text-gray-600">Desde este número se espera el pago móvil</p>
             </div>
+            <div class="space-y-3">
+                <div class="w-full text-center">
+                    <span class="font-bold  text-center">DATOS DE PAGO MÓVIL</span>
+                </div>
+                <div class="grid grid-cols-2 items-center justify-center gap-2 max-w-xl">
+                  <div class="relative">
+                    <input
+                    class="w-full h-20 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-blue-900 rounded-md px-3 py-2 pt-4 transition duration-300 ease focus:outline-none focus:border-blue-950 hover:border-slate-300 shadow-sm focus:shadow"
+                    name="amount-phone"
+                    id="amount-phone"
+                    v-model="payment.amount"
+                    />
+                    <label
+                    class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-blue-900 text-lg transition-all transform origin-left"
+                    for="amount-phone"
+                    >
+                    Monto
+                  </label>
+                </div>
+              <div class="relative">
+                <input
+                class="w-full h-20 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-blue-900 rounded-md px-3 py-2 pt-4 transition duration-300 ease focus:outline-none focus:border-blue-950 hover:border-slate-300 shadow-sm focus:shadow"
+                name="reference-phone"
+                id="reference-phone"
+                v-model="payment.reference"
+                />
+                <label
+                class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-blue-900 text-lg transition-all transform origin-left"
+                for="reference-phone"
+                >
+                Número de referencia
+              </label>
+            </div>
+          </div>
+                <div class="w-full text-center">
+                    <button class="bg-blue-600 text-blue-100 font-bold p-4 rounded-lg cursor-pointer" @click="handlePayment">
+                        Notificar Pago móvil
+                    </button>
+                </div>
 
-            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+            </div>
+
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg mt-2">
               <div class="flex items-center gap-2 mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
@@ -139,53 +193,54 @@ function handleActivator(index) {
             </div>
             <div class="space-y-3">
                 <div class="w-full text-center">
-
                     <span class="font-bold  text-center">DATOS DE TRANFERENCIA</span>
                 </div>
-                <div class="relative">
+                <div class="grid grid-cols-2 items-center justify-center gap-2 max-w-xl">
+                  <div class="relative">
                     <input
                     class="w-full h-20 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-green-900 rounded-md px-3 py-2 pt-4 transition duration-300 ease focus:outline-none focus:border-green-950 hover:border-slate-300 shadow-sm focus:shadow"
                     name="amount"
                     id="amount"
-                    v-model="form.amount"
+                    v-model="transfer.amount"
                     />
                     <label
                     class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-green-900 text-lg transition-all transform origin-left"
                     for="amount"
                     >
-                        Monto
-                    </label>
+                    Monto
+                  </label>
                 </div>
                 <div class="relative">
-                    <input
-                    class="w-full h-20 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-green-900 rounded-md px-3 py-2 pt-4 transition duration-300 ease focus:outline-none focus:border-green-950 hover:border-slate-300 shadow-sm focus:shadow"
-                    name="bank"
-                    id="bank"
-                    v-model="form.bank"
-                    />
-                    <label
-                    class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-green-900 text-lg transition-all transform origin-left"
-                    for="bank"
-                    >
-                        Banco
-                    </label>
-                </div>
-                <div class="relative">
-                    <input
-                    class="w-full h-20 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-green-900 rounded-md px-3 py-2 pt-4 transition duration-300 ease focus:outline-none focus:border-green-950 hover:border-slate-300 shadow-sm focus:shadow"
-                    name="reference"
-                    id="reference"
-                    v-model="form.reference"
-                    />
-                    <label
-                    class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-green-900 text-lg transition-all transform origin-left"
-                    for="reference"
-                    >
-                        Número de referencia
-                    </label>
-                </div>
+                  <input
+                  class="w-full h-20 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-green-900 rounded-md px-3 py-2 pt-4 transition duration-300 ease focus:outline-none focus:border-green-950 hover:border-slate-300 shadow-sm focus:shadow"
+                  name="bank"
+                  id="bank"
+                  v-model="transfer.bank"
+                  />
+                  <label
+                  class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-green-900 text-lg transition-all transform origin-left"
+                  for="bank"
+                  >
+                  Banco
+                </label>
+              </div>
+              <div class="relative col-span-2">
+                <input
+                class="w-full h-20 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-green-900 rounded-md px-3 py-2 pt-4 transition duration-300 ease focus:outline-none focus:border-green-950 hover:border-slate-300 shadow-sm focus:shadow"
+                name="reference"
+                id="reference"
+                v-model="transfer.reference"
+                />
+                <label
+                class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-green-900 text-lg transition-all transform origin-left"
+                for="reference"
+                >
+                Número de referencia
+              </label>
+            </div>
+          </div>
                 <div class="w-full text-center">
-                    <button class="bg-green-600 text-green-100 font-bold p-4 rounded-lg cursor-pointer">
+                    <button class="bg-green-600 text-green-100 font-bold p-4 rounded-lg cursor-pointer" @click="handleTransfer">
                         Notificar Transferencia
                     </button>
                 </div>

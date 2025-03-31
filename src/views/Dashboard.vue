@@ -1,44 +1,104 @@
 <script setup>
   import { RouterLink } from 'vue-router';
-  import { ref } from 'vue';
+  import { ref , onMounted } from 'vue';
+
+  import { dataBase } from '@/stores/database'
+  import axios  from "axios"
+  
 
   import logo from "@/assets/parking-light.svg"
-  import car from "@/assets/car.svg"
-  import wallet from "@/assets/wallet.svg"
-  import map from "@/assets/map.svg"
-  import userImg from "@/assets/user.svg"
-  import incognito from "@/assets/user-secret-solid.svg"
-  import arrow from '@/assets/right-from.svg'
+  import userImg from '@/assets/user.svg'
 
   import { AdjustmentsHorizontalIcon } from '@heroicons/vue/24/outline'
-  import { PhoneIcon } from '@heroicons/vue/24/outline';
-  import { InboxIcon } from '@heroicons/vue/24/outline';
-  import { IdentificationIcon } from '@heroicons/vue/24/outline';
-  import { TruckIcon } from '@heroicons/vue/24/outline';
-
+  import { PhoneIcon } from '@heroicons/vue/24/outline'
+  import { InboxIcon } from '@heroicons/vue/24/outline'
+  import { IdentificationIcon } from '@heroicons/vue/24/outline'
+  import { TruckIcon } from '@heroicons/vue/24/outline'
+  import { BanknotesIcon } from '@heroicons/vue/24/outline'
+  import { MapPinIcon } from '@heroicons/vue/24/outline'
+  import { ArrowLeftEndOnRectangleIcon } from '@heroicons/vue/24/outline'
+  import { DocumentTextIcon } from '@heroicons/vue/24/outline'
+  
+  
   import Today from '@/components/Today.vue';
   import VehicleManagement from '@/components/VehicleManagement.vue';
   import Movements from '@/components/Movements.vue';
   import Map from '@/components/Map.vue';
+  import Administrative from '@/components/Administrative.vue';
 
-  const activator = ref([{title:"Movimientos", img: wallet},{title:"Operaciones", img:car},{title:"Paso a paso", img:map}])
-  const indexActivator = ref(null)
-  const user = ref(JSON.parse(localStorage.getItem('user')) || null)
-  const plates = ref(['AEJ62R', 'XYZ123', 'ABC456'])
+  const stores = dataBase()
+  const users = ref(stores.users)
+  const plates = ref(stores.vehicles)
+  
+  const activator = ref([
+  { title: "Movimientos", icon: "BanknotesIcon" },
+  { title: "Operaciones", icon: "TruckIcon" },
+  { title: "Paso a paso", icon: "MapPinIcon" },
+  { title: "Administrativo", icon: "DocumentTextIcon" },
 
+  ])
+  const iconComponents = {
+    BanknotesIcon,
+    TruckIcon,
+    MapPinIcon,
+    DocumentTextIcon
+
+  }
+  const indexActivator = ref(0)
+  const user = ref(null)
+  const imageBase64 = ref("");
   function handleActivator(index){
     indexActivator.value = indexActivator.value === index ? null : index
   }
   function logout(){
-    localStorage.removeItem('user');
-    window.location.reload();
+    localStorage.removeItem('user')
+    localStorage.removeItem('avatar')
+    localStorage.removeItem('identity_number')
+    window.location.reload()
   }
+  const handleFileChange = async (event) => {
+    console.log("handleFileChange")
+    const file = event.target.files[0]
+    if (!file) return
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        console.log('base64')
+        // Guardar en data y localStorage
+        const base64 = e.target.result;
+        localStorage.setItem('avatar', base64);
+      };
+      reader.readAsDataURL(file);
+    }
+    const formData = new FormData();
+    formData.append('photo', file);  // Envía el archivo directamente
+    try {
+      await axios.post(
+        `http://127.0.0.1:8000/users/${user.value.identity_number}/photo`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',  // Cambia el Content-Type
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+  onMounted(function(){
+    const identity_number = JSON.parse(localStorage.getItem('identity_number'))
+    Array.from(users.value).forEach((row)=>{
+      if(row.identity_number == parseInt(identity_number))
+        user.value = row
+    }) 
+  })
 </script>
 
 <template>
   <div class="min-h-screen w-screen flex flex-col md:flex-row bg-gray-50 text-lg">
     <!-- Sidebar -->
-    <aside class="fixed md:static bottom-0 left-0 right-0 z-10 flex md:flex-col w-full md:min-h-screen md:h-full md:w-56 bg-indigo-950 items-center justify-between py-4 md:py-8 border-t md:border-r border-indigo-700">
+    <aside class="fixed bottom-0 left-0 right-0 z-10 flex md:flex-col w-full md:min-h-screen md:h-full md:w-56 bg-indigo-950 items-center justify-between py-4 md:py-8 border-t md:border-r border-indigo-700">
       <img :src="logo" class="hidden md:block w-40 h-auto">
       <ul class="w-full flex md:flex-col items-center justify-center gap-4 md:gap-6 px-4">
         <li 
@@ -46,19 +106,22 @@
           :key="index"
           @click="handleActivator(index)"
           :class="[
-            'p-3 md:p-4 w-12 h-12 md:w-16 md:h-16 text-center rounded-xl cursor-pointer transition-all duration-300',
+            'p-3 md:p-4 w-14 h-14 md:w-16 md:h-16 text-center rounded-xl cursor-pointer transition-all duration-300 grid place-content-center',
             indexActivator === index ? 'bg-indigo-400 shadow-lg' : 'bg-indigo-700 hover:bg-indigo-4400'
           ]" 
           >
-          <img :src="link.img" :alt="link.title" class="w-full h-full filter invert">
+          <component :is="iconComponents[link.icon]" class="h-12 w-12 text-white font-extrabold" />
         </li>
       </ul>
       <button class="hidden md:flex text-center p-3 rounded-xl cursor-pointer hover:bg-indigo-700 transition-colors duration-300">
         <router-link to="/">
-          <img :src="arrow" class="w-8 h-8 rotate-180 filter invert opacity-70 hover:opacity-100">
+          <ArrowLeftEndOnRectangleIcon  class="w-8 h-8  filter invert opacity-70 hover:opacity-100"/>
         </router-link>
       </button>
     </aside>
+    <div class="hidden md:flex w-full md:min-h-screen md:h-full md:w-56">
+      <!--Sidebar back-->
+    </div>
 
     <!--Main Content-->
     <main class="w-full flex-1 md:overflow-auto pt-0 pb-20 md:pb-0">
@@ -72,7 +135,12 @@
           <div v-if="user!=null" id="user" class="w-full h-full flex flex-col md:flex-row items-center justify-between gap-4">
             <!-- Primera columna (info usuario) -->
             <div class="w-full md:w-1/2 h-full min-h-[130px] md:bg-slate-100 rounded-xl md:p-4 flex items-center gap-4 relative">
-              <img :src="userImg" class="w-16 h-16 rounded-full border-2 border-indigo-500 p-2 absolute left-4 top-4 md:static">
+              <div id="submit-avatar-user" class="absolute left-4 top-4  md:static text-center flex items-center justify-center">
+                <div  class="w-16 h-16 rounded-full border-2 border-indigo-500 p-2  relative">
+                  <img :src="userImg"  class="h-8 w-8  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"/>
+                  <input type="file" @change="handleFileChange" accept="image/*" name="user-avatar" id="user-avatar" class="w-full h-full z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer opacity-0">
+                </div>
+              </div>
               <div class="space-y-2 ml-20 md:ml-0 w-full">
                 <h2 class="text-lg font-bold w-full text-end md:text-center">Bienvenido, <span class="text-indigo-600">{{ user.username }}</span></h2>
                 <div class="grid grid-cols-2 lg:grid-cols-3 gap-2  ml-4 md:ml-0 mt-4">
@@ -102,9 +170,9 @@
                 </h3>
               </div>
               <div class="grid grid-cols-2 gap-2">
-                <span v-for="plate in plates" :key="plate" 
+                <span v-for="plate,index in plates" :key="index" 
                       class="bg-white rounded-lg p-2 text-center font-mono font-bold">
-                  {{ plate }}
+                  {{ plate.car_plate }}
                 </span>
               </div>
             </div>
@@ -113,7 +181,7 @@
           <!-- Modo incógnito -->
           <div v-else id="user-incognito" class="w-full flex flex-col md:flex-row items-center justify-between gap-6 p-4 md:bg-slate-100 rounded-xl">
             <div class="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
-              <img :src="incognito" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-indigo-500 p-1">
+              <img :src="userImg" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-indigo-500 p-1">
               <p class="text-gray-700">
                 Estás en modo incógnito. <span class="block md:inline">Disfruta de funciones básicas o</span>
                 <span class="text-indigo-600 font-medium">regístrate para acceder a todo el contenido</span>.
@@ -138,7 +206,7 @@
               <div class="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent"></div>
               
               <div class="absolute top-5 left-5 flex items-center gap-3">
-                <img :src="wallet" alt="Wallet" class="h-8 w-8 md:h-10 md:w-10 filter invert">
+                <BanknotesIcon title="Billetera Digital" class="h-8 w-8 md:h-10 md:w-10"/>
                 <span class="font-bold text-lg md:text-xl tracking-wide">Billetera Digital</span>
               </div>
               
@@ -182,6 +250,7 @@
                 <Movements v-else-if="indexActivator===0" key="movements" class="h-full" />
                 <VehicleManagement v-else-if="indexActivator===1" key="operations" class="h-full" />
                 <Map v-else-if="indexActivator===2" key="guide" class="h-full" />
+                <Administrative v-else-if="indexActivator===3"  key="administrative" class="h-full" />
               </transition>
             </div>
           </div>

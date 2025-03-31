@@ -4,7 +4,7 @@
   
   import { dataBase } from '@/stores/database'
   import axios from 'axios';
-  import arrow from '@/assets/right-from.svg'
+  import { ArrowLeftEndOnRectangleIcon } from '@heroicons/vue/24/outline'
   
   const stores = dataBase()
   const users = ref(stores.users)
@@ -32,6 +32,12 @@
       notification.value.show = false
     }, 5000)
   }
+  async function getAvatar(identity_number){
+    console.log("get_avatar")
+    const response = await axios.get(`http://127.0.0.1:8000/users/${identity_number}/photo`)
+    const base64 = response.date;
+    localStorage.setItem('avatar', base64);
+  }
   async function submit(){
     let exists = false
     let data_user = {}
@@ -40,7 +46,8 @@
       return
     }
     Array.from(users.value).forEach(user =>{
-      if(user.username == identification.value || user.identity_number==identification.value){
+      console.log(user.identity_number)
+      if( user.identity_number == parseInt(identification.value) ){
         exists = true
         data_user  = user
       }
@@ -50,7 +57,7 @@
       return
     }
     try{
-        const response = await axios.post('http://127.0.0.1:8000/login', {
+        await axios.post('http://127.0.0.1:8000/login', {
           identity_number: identification.value,
           password: password.value
         }, {
@@ -58,8 +65,9 @@
           'Content-Type': 'application/json',
         },
         });
-        localStorage.setItem('user', JSON.stringify(data_user));
-        window.location.href = "/app";
+        localStorage.setItem('identity_number', JSON.stringify(identification.value))
+        getAvatar(identification.value)
+        window.location.href = "/app"
         showNotification("Bienvenido a nuestra app", 'success')
     }catch(error){
       if (error.status ==500){
@@ -132,7 +140,7 @@
     </div>
     <button class="fixed top-2 left-2 text-center p-4 bg-indigo-50 rounded-xl cursor-pointer">
         <router-link to="/">
-            <img :src="arrow" class="w-8 h-8 md:w-12 md:h-12 rotate-180">
+            <ArrowLeftEndOnRectangleIcon  class="w-8 h-8 md:w-12 md:h-12 " />
         </router-link>
     </button>
     <!-- Notificación dinámica -->

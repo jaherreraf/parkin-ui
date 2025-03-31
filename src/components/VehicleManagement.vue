@@ -1,9 +1,76 @@
 <script setup>
-import { ref } from 'vue'
+  import { ref } from 'vue'
 
-const newVehicle = ref('')
-const myVehiclePlate = ref('')
-const thirdPartyPlate = ref('')
+  import axios from 'axios'
+
+  import { dataBase } from '@/stores/database'
+
+  import { PlusIcon } from '@heroicons/vue/24/outline'
+  import { UsersIcon } from '@heroicons/vue/24/outline'
+  import { TrashIcon } from '@heroicons/vue/24/outline'
+
+  const stores = dataBase()
+  const vehicles = ref(stores.vehicles)
+  const newVehicle = ref('')
+  const myVehiclePlate = ref('')
+  const thirdPartyPlate = ref('')
+  const identity_number = ref(JSON.parse(localStorage.getItem('identity_number')) || null)
+  function validatePlate( plate ){
+    if( !plate ) return "El campo es obligatorio"
+    if( plate.length < 6 || plate.length > 7 ) return "6 o 7 Dígitos"
+    if( !/^[a-zA-Z0-9]+$/.test(plate) ) return "Formato incorrecto"
+    return ""
+  }
+  async function handleNewVehicle(){
+    if(!identity_number.value){
+      console.log("user null")
+      return
+    }
+    let exists = false
+    Array.from(vehicles.value).forEach(vehicle =>{
+      if(vehicle.car_plate == newVehicle.value.toUpperCase())
+        exists = true
+    })
+    if(exists){
+      console.log('ya existe la placa')
+      return
+    }
+    if(validatePlate(newVehicle.value) == ""){
+      try{
+        await axios.post('http://127.0.0.1:8000/vehicles', {
+          user_id:identity_number.value,
+          car_plate: newVehicle.value.toUpperCase(),
+          serial: '',
+          }, {
+            headers: {
+            'Content-Type': 'application/json',
+          },
+      });
+      newVehicle.value = ''
+      location.reload()
+    }catch (error) {
+      console.log('hello')
+      console.log(error)
+    }
+    }
+    
+  }
+  async function handleDeleteVehicle(){
+    if(validatePlate(myVehiclePlate.value) == ""){
+      try {
+        const response = await axios.delete(`http://127.0.0.1:8000/vehicles/${myVehiclePlate.value.toUpperCase()}`);
+        console.log(response.data.message); // Muestra el mensaje de éxito
+        location.reload()
+      } catch (error) {
+        console.error('Error al eliminar vehículo:', error.response.data.description); // Muestra el mensaje de error
+      }
+    }
+
+  }
+  function handleThirdPartyPlate(){
+    
+  }
+
 </script>
 
 <template>
@@ -16,9 +83,7 @@ const thirdPartyPlate = ref('')
         <div class="p-6">
           <div class="flex items-center gap-3 mb-4">
             <div class="bg-blue-100 p-2 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
+              <PlusIcon class="h-6 w-6 text-blue-600"/>
             </div>
             <h3 class="text-xl font-semibold text-gray-800">Agregar Vehículo</h3>
           </div>
@@ -46,49 +111,47 @@ const thirdPartyPlate = ref('')
             class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300"
             :disabled="!newVehicle"
             :class="{'opacity-50 cursor-not-allowed': !newVehicle}"
+            @click="handleNewVehicle"
           >
             Registrar Vehículo
           </button>
         </div>
       </div>
 
-      <!-- Tarjeta 2: Mis Matrículas -->
+      <!-- Tarjeta 2: Mis Matrículas Eliminar -->
       <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
         <div class="p-6">
           <div class="flex items-center gap-3 mb-4">
-            <div class="bg-green-100 p-2 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+            <div class="bg-red-100 p-2 rounded-full">
+                <TrashIcon class="h-6 w-6 text-red-600"/>
             </div>
             <h3 class="text-xl font-semibold text-gray-800">Mis Matrículas</h3>
           </div>
-          
-          <p class="text-gray-600 mb-5">Paga la tarifa de estacionamiento para tus vehículos registrados</p>
-          
+          <p class="text-gray-600 mb-5">Desvíncula uno de tus vehiculo de tu cuenta</p>
           <div class="relative">
             <input
               type="text"
               id="my-vehicle"
               v-model="myVehiclePlate"
-              class="w-full h-12 bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              class="w-full h-12 bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
               placeholder=" "
             >
             <label 
               for="my-vehicle"
               class="absolute left-3 top-3 text-gray-500 transition-all duration-200 pointer-events-none"
-              :class="{'transform -translate-y-3 text-xs text-green-600 bg-white px-1': myVehiclePlate}"
+              :class="{'transform -translate-y-3 text-xs text-red-600 bg-white px-1': myVehiclePlate}"
             >
               Placa del vehículo
             </label>
           </div>
           
           <button 
-            class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300"
+            class="w-full mt-4 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300"
             :disabled="!myVehiclePlate"
             :class="{'opacity-50 cursor-not-allowed': !myVehiclePlate}"
+            @click="handleDeleteVehicle"
           >
-            Buscar Vehículo
+            Eliminar Vehículo
           </button>
         </div>
       </div>
@@ -98,9 +161,7 @@ const thirdPartyPlate = ref('')
         <div class="p-6">
           <div class="flex items-center gap-3 mb-4">
             <div class="bg-purple-100 p-2 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
+              <UsersIcon class="h-6 w-6 text-purple-600" />
             </div>
             <h3 class="text-xl font-semibold text-gray-800">Vehículos de Terceros</h3>
           </div>
