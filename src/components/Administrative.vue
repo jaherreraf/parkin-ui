@@ -9,6 +9,9 @@
     
     import Invoice from '@/components/administrative/Invoice.vue'
     
+    import { dataBase } from '@/stores/database'
+    const stores = dataBase()
+  
     const indexActivator = ref(null)
     const options = ref([
         {title:"Transferencias"},
@@ -16,11 +19,7 @@
         {title:"Efectivo"},
         {title:"Denuncias"}
     ])
-    const dollar = ref(null)
-    onMounted(async function(){
-      const response = await axios.get("https://pydolarve.org/api/v1/dollar?page=bcv&monitor=usd")
-      dollar.value = response.data
-    })
+    const dollar = ref(stores.dollar)
 </script>
 <template>
    <div class="h-auto w-auto bg-gray-50 rounded-lg border border-gray-200 flex flex-col items-center justify-center relative">    

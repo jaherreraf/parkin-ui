@@ -4,8 +4,9 @@
   import { dataBase } from './stores/database'
   const stores = dataBase()
   onMounted(function(){
-    stores.fecthUsers()
-    stores.fecthVehicles()
+    stores.fetchUsers()
+    stores.fetchVehicles()
+    stores.fetchDollar()
   })
 </script>
 

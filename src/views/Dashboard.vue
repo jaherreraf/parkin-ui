@@ -46,12 +46,11 @@
   }
   const indexActivator = ref(0)
   const user = ref(null)
-  const imageBase64 = ref("");
+  const imageBase64 = ref( localStorage.getItem('avatar') || userImg )
   function handleActivator(index){
     indexActivator.value = indexActivator.value === index ? null : index
   }
   function logout(){
-    localStorage.removeItem('user')
     localStorage.removeItem('avatar')
     localStorage.removeItem('identity_number')
     window.location.reload()
@@ -82,6 +81,7 @@
           },
         }
       );
+      location.reload()
     } catch (error) {
       console.error("Error:", error);
     }
@@ -136,8 +136,8 @@
             <!-- Primera columna (info usuario) -->
             <div class="w-full md:w-1/2 h-full min-h-[130px] md:bg-slate-100 rounded-xl md:p-4 flex items-center gap-4 relative">
               <div id="submit-avatar-user" class="absolute left-4 top-4  md:static text-center flex items-center justify-center">
-                <div  class="w-16 h-16 rounded-full border-2 border-indigo-500 p-2  relative">
-                  <img :src="userImg"  class="h-8 w-8  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"/>
+                <div  class="w-16 h-16 rounded-full border-2 border-indigo-500 p-0  relative">
+                  <img :src="imageBase64"  class="h-full w-full rounded-full   absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"/>
                   <input type="file" @change="handleFileChange" accept="image/*" name="user-avatar" id="user-avatar" class="w-full h-full z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer opacity-0">
                 </div>
               </div>
