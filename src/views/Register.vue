@@ -116,7 +116,7 @@
     errors.value = {username: '',email: '',phone: '',identification: '',password: '',general: ''}
     if (!validateForm()) return
     try{
-      await axios.post('http://127.0.0.1:8000/users', {
+      await axios.post('http://127.0.0.1:8000/users/', {
         ...user.value,
         user_type: 'user',
         phone_number: user.value.phone_number || null  // Enviar null si está vacío

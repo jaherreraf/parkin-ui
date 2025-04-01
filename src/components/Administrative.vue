@@ -23,6 +23,28 @@
     const payments = ref(stores.payments)
     const mobile = ref([])
     const transfer = ref([])
+    async function confirm(item){
+        console.log(item.id_user , item.amount)
+        try{
+      await axios.post(`http://127.0.0.1:8000/users/${item.id_user}/balance`, {
+        balance: item.amount,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      window.location.href = "/app";
+    }catch (error) {
+      if (error.response?.data?.error?.includes('UNIQUE constraint')) {
+        alert('El usuario, cédula o email ya están registrados', 'error')
+      } else if (error.response?.data?.error) {
+        alert(error.response.data.error, 'error')
+      } else {
+        alert('Error de comunicación con la base de datos', 'error')
+      }
+    }
+
+    }
     onMounted(()=>{
         Array.from(payments.value).forEach(item=>{
             if(item.method == 'transfer')
@@ -93,7 +115,7 @@
                                     <span>Monto: <span class="font-medium text-indigo-600">Bs. {{item.amount}}</span></span>
                                 </div>
                                 <!-- Confirmación normal -->
-                                <button class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-md transition-colors whitespace-nowrap">
+                                <button class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-md transition-colors whitespace-nowrap" @click="confirm(item)">
                                     Confirmar
                                 </button>
                             </div>
@@ -129,7 +151,8 @@
                                     <span>Monto: <span class="font-medium text-indigo-600">Bs. {{ item.amount }}</span></span>
                                 </div>
                                 <!-- Confirmación normal -->
-                                <button class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-md transition-colors whitespace-nowrap">
+                                <button class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-md transition-colors whitespace-nowrap"
+                                @click="confirm(item)">
                                     Confirmar
                                 </button>
                             </div>
@@ -145,7 +168,9 @@
                                         class="w-24 px-2 py-1.5 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                                         :id="'amount' + index"
                                         >
-                                        <button class="px-2 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition-colors whitespace-nowrap">
+                                        <button class="px-2 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition-colors whitespace-nowrap"
+                                        @click="otherAmount(item,amount)"
+                                        >
                                             Aplicar
                                         </button>
                                     </div>

@@ -71,8 +71,8 @@
 </script>
 
 <template>
-  <div class=" w-full overflow-hidden h-full min-h-96">
-    <div id="parking" class="w-full h-[500px] overflow-y-scroll overflow-x-scroll grid grid-cols-16 grid-rows-8 border-2 border-slate-500">
+  <div class=" w-full overflow-hidden h-full min-h-96 overflow-y-scroll overflow-x-scroll">
+    <div id="parking" class="w-full h-[500px]  grid grid-cols-16 grid-rows-8 border-2 border-slate-500">
       <div :class="['' , space.style]" v-for="space,index in parking_space" :key="index">
       {{floors[indexActivator].letter}}{{ index+1 }}
       </div>

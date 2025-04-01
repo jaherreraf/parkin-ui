@@ -4,9 +4,14 @@
   import axios from 'axios'
   import { dataBase } from '@/stores/database'
   
+  import { CreditCardIcon } from '@heroicons/vue/24/outline'
+  import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
+  import { InformationCircleIcon } from '@heroicons/vue/24/outline'
+
   const stores = dataBase()
   const users = ref(stores.users)
   const user = ref(null)
+  const identity_number = ref(JSON.parse(localStorage.getItem('identity_number')) || null)
   const activator = ref(null)
   const payment = ref({amount:'', reference:''})
   const transfer = ref({amount:''  , bank:'', reference:''})
@@ -49,12 +54,9 @@
                 'Content-Type': 'application/json',
             },
         });
-
         if (response.data.success) {
             alert("Transferencia registrada exitosamente");
             transfer.value = { amount: '', reference: '' };
-        } else {
-            alert("Error: " + (response.data.message || "Error desconocido"));
         }
     } catch(error) {
         console.error('Error:', error);
@@ -91,7 +93,6 @@
     }
   }
   onMounted(function(){
-    const identity_number = JSON.parse(localStorage.getItem('identity_number'))
     Array.from(users.value).forEach((row)=>{
       if(row.identity_number == parseInt(identity_number))
         user.value = row
@@ -115,9 +116,7 @@
         >
           <div class="flex items-center gap-3 mb-3">
             <div class="bg-blue-100 p-3 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-              </svg>
+              <CreditCardIcon class="h-6 w-6 text-blue-600"/>
             </div>
             <h3 class="text-xl font-semibold text-gray-800">Pago Móvil</h3>
           </div>
@@ -126,7 +125,7 @@
 
         <transition name="slide-fade">
           <div 
-            v-if="activator === 0"
+            v-if="activator === 0 && identity_number!=null" 
             class="px-5 pb-5 pt-2 border-t border-gray-100"
           >
             <div class="mb-4">
@@ -148,9 +147,7 @@
             </div>
             <div class="bg-blue-50 p-4 rounded-lg mb-4">
               <div class="flex items-center gap-2 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
-                </svg>
+                <InformationCircleIcon class="h-5 w-5 text-blue-600"/>
                 <span class="font-medium text-blue-800">Tu número de teléfono:</span>
               </div>
               <p class="text-gray-700 mb-2">0414-1628885</p>
@@ -160,7 +157,7 @@
                 <div class="w-full text-center">
                     <span class="font-bold  text-center">DATOS DE PAGO MÓVIL</span>
                 </div>
-                <div class="grid grid-cols-2 items-center justify-center gap-2 max-w-xl">
+                <div class="grid grid-cols-2 items-center justify-center gap-2 w-full">
                   <div class="relative">
                     <input
                     class="w-full h-20 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-blue-900 rounded-md px-3 py-2 pt-4 transition duration-300 ease focus:outline-none focus:border-blue-950 hover:border-slate-300 shadow-sm focus:shadow"
@@ -200,9 +197,7 @@
 
             <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg mt-2">
               <div class="flex items-center gap-2 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>
+                <ExclamationTriangleIcon class="h-5 w-5 text-yellow-600"/>
                 <span class="font-medium text-yellow-800">IMPORTANTE</span>
               </div>
               <p class="text-sm text-gray-700">
@@ -223,9 +218,7 @@
         >
           <div class="flex items-center gap-3 mb-3">
             <div class="bg-green-100 p-3 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-              </svg>
+              <CreditCardIcon class="h-6 w-6 text-green-600"/>
             </div>
             <h3 class="text-xl font-semibold text-gray-800">Transferencia</h3>
           </div>
@@ -233,7 +226,7 @@
         </div>
         <transition name="slide-fade">
           <div 
-            v-if="activator === 1"
+            v-if="activator === 1 && identity_number!=null"
             class="px-5 pb-5 pt-2 border-t border-gray-100"
           >
             <div class="mb-4">
@@ -260,10 +253,8 @@
 
             <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
                 <div class="flex items-center gap-2 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>
-                <span class="font-medium text-yellow-800">IMPORTANTE</span>
+                  <ExclamationTriangleIcon class="h-5 w-5 text-yellow-600"/>
+                  <span class="font-medium text-yellow-800">IMPORTANTE</span>
                 </div>
                 <p class="text-sm text-gray-700">
                     Una vez realizada la transferencia desde tu cuenta bancaria notifique completando el siguiente fomulario
@@ -273,7 +264,7 @@
                 <div class="w-full text-center">
                     <span class="font-bold  text-center">DATOS DE TRANFERENCIA</span>
                 </div>
-                <div class="grid grid-cols-2 items-center justify-center gap-2 max-w-xl">
+                <div class="grid grid-cols-2 items-center justify-center gap-2 w-full">
                   <div class="relative">
                     <input
                     class="w-full h-20 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-green-900 rounded-md px-3 py-2 pt-4 transition duration-300 ease focus:outline-none focus:border-green-950 hover:border-slate-300 shadow-sm focus:shadow"
@@ -288,21 +279,7 @@
                     Monto
                   </label>
                 </div>
-                <div class="relative">
-                  <input
-                  class="w-full h-20 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-green-900 rounded-md px-3 py-2 pt-4 transition duration-300 ease focus:outline-none focus:border-green-950 hover:border-slate-300 shadow-sm focus:shadow"
-                  name="bank"
-                  id="bank"
-                  v-model="transfer.bank"
-                  />
-                  <label
-                  class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-green-900 text-lg transition-all transform origin-left"
-                  for="bank"
-                  >
-                  Banco
-                </label>
-              </div>
-              <div class="relative col-span-2">
+              <div class="relative">
                 <input
                 class="w-full h-20 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-green-900 rounded-md px-3 py-2 pt-4 transition duration-300 ease focus:outline-none focus:border-green-950 hover:border-slate-300 shadow-sm focus:shadow"
                 name="reference"
@@ -323,6 +300,44 @@
                     </button>
                 </div>
 
+            </div>
+          </div>
+        </transition>
+      </div>
+       <!-- Tarjeta de Efectivo -->
+       <div 
+        class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300"
+        :class="{'ring-2 ring-red-500': activator === 2}"
+      >
+        <div 
+          class="p-5 cursor-pointer flex flex-col items-center md:items-start"
+          @click="handleActivator(2)"
+        >
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-red-100 p-3 rounded-full">
+              <CreditCardIcon class="h-6 w-6 text-red-600"/>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800">Efectivo</h3>
+          </div>
+          <span class="text-sm text-red-600 bg-red-50 px-3 py-1 rounded-full">Tipo: Taquilla</span>
+        </div>
+        <transition name="slide-fade">
+          <div 
+            v-if="activator === 2"
+            class="px-5 pb-5 pt-2 border-t border-red-100"
+          >
+            <div class="mb-4">
+              <h4 class="text-lg font-medium text-gray-700 mb-3 text-center">Efectivo</h4>
+              <p>Dirigirse hacia la taquilla para poder hacer pago de tu estacionamiento con efectivo ya sea divisa o en bolivares</p>
+            </div>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg mt-2">
+              <div class="flex items-center gap-2 mb-2">
+                <ExclamationTriangleIcon class="h-5 w-5 text-yellow-600"/>
+                <span class="font-medium text-yellow-800">IMPORTANTE</span>
+              </div>
+              <p class="text-sm text-gray-700">
+                Si no tienes cuenta en parking o no iniciaste sección Este es el único método de pago que te podemos proporcionar
+              </p>
             </div>
           </div>
         </transition>

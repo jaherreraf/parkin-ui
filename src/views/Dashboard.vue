@@ -148,13 +148,13 @@
               <div class="space-y-2 ml-20 md:ml-0 w-full">
                 <h2 class="text-lg font-bold w-full text-end md:text-center">Bienvenido, <span class="text-indigo-600">{{ user.username }}</span></h2>
                 <div class="grid grid-cols-2 lg:grid-cols-3 gap-2  ml-4 md:ml-0 mt-4">
-                  <span class="flex items-center gap-2 rounded-xl p-2 bg-indigo-100 text-indigo-700 text-sm max-w-56 md:mx-w-96">
+                  <span class="flex items-center gap-2 rounded-xl p-2 bg-indigo-100 text-indigo-700 text-sm ">
                     <PhoneIcon class="h-5 w-5"/> {{ user.phone_number }}
                   </span>
-                  <span class="flex items-center gap-2 rounded-xl p-2 bg-indigo-100 text-indigo-700 text-sm max-w-56 md:mx-w-96">
+                  <span class="flex items-center gap-2 rounded-xl p-2 bg-indigo-100 text-indigo-700 text-sm ">
                     <InboxIcon class="h-5 w-5"/> {{ user.email }}
                   </span>
-                  <span class="flex items-center gap-2 rounded-xl p-2 bg-indigo-100 text-indigo-700 text-sm max-w-56 md:mx-w-96">
+                  <span class="flex items-center gap-2 rounded-xl p-2 bg-indigo-100 text-indigo-700 text-sm ">
                     <IdentificationIcon class="h-5 w-5"/> {{ user.identity_number }}
                   </span>
                 </div>
