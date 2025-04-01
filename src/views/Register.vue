@@ -7,7 +7,11 @@
   import axios from 'axios'
   
   import { ArrowLeftEndOnRectangleIcon } from '@heroicons/vue/24/outline'
-  import { ExclamationCircleIcon } from '@heroicons/vue/24/outline'
+  
+  import { useNotification } from '@/stores/notification'
+  import Notification from '@/components/Notification.vue'
+  const { notification, showNotification } = useNotification()
+  
   
   
   const stores = dataBase()
@@ -22,30 +26,8 @@
     password: '',
     general: ''
   })
-  const notification = ref({
-    message: '',
-    type: 'error', // 'error', 'success', 'warning'
-    show: false
-  })
 
-  const showError = ref(false)
   const errorTimeout = ref(null)
-  
-  function showNotification(message, type = 'error') {
-    if (errorTimeout.value) {
-      clearTimeout(errorTimeout.value)
-    }
-    
-    notification.value = {
-      message,
-      type,
-      show: true
-    }
-    
-    errorTimeout.value = setTimeout(() => {
-      notification.value.show = false
-    }, 5000)
-  }
   function validateForm() {
     let isValid = true
     
@@ -96,8 +78,10 @@
         },
       });
       localStorage.setItem('identity_number', JSON.stringify(user.value.identity_number));
-      window.location.href = "/app";
       showNotification('Usuario registrado con éxito', 'success')
+      setTimeout(() => {
+        window.location.href = "/app";
+      }, 1000)
         // Limpiar formulario después de registro exitoso
       user.value = {username:'',email:'', phone_number:'',identity_number:'',password:''}
     }catch (error) {
@@ -245,19 +229,10 @@
         </router-link>
     </button>
     <!-- Notificación dinámica -->
-    <transition name="slide-fade">
-      <div 
-        v-if="notification.show"
-        class="fixed bottom-4 right-4 w-96 h-24 p-4 rounded-lg shadow-lg transition-all duration-500 ease-in-out flex items-center"
-        :class="{
-          'bg-red-100 border-l-4 border-red-500 text-red-700': notification.type === 'error',
-          'bg-green-100 border-l-4 border-green-500 text-green-700': notification.type === 'success',
-          'bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700': notification.type === 'warning'
-        }"
-      >
-      <ExclamationCircleIcon class="h-6 w-6 mr-2"  :class="{'text-red-600': notification.type === 'error','text-green-600': notification.type === 'success','text-yellow-600': notification.type === 'warning'}"/>
-        <span class="font-semibold">{{ notification.message }}</span>
-      </div>
-    </transition>
+    <Notification 
+      :show="notification.show"
+      :message="notification.message"
+      :type="notification.type"
+    />
   </div>
 </template>

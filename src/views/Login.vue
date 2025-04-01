@@ -1,39 +1,20 @@
 <script setup>
-  import { ref } from 'vue';
-  import { RouterLink } from 'vue-router';
+  import { ref } from 'vue'
+  import { RouterLink } from 'vue-router'
   
   import { dataBase } from '@/stores/database'
-  import axios from 'axios';
+  import axios from 'axios'
 
   import { ArrowLeftEndOnRectangleIcon } from '@heroicons/vue/24/outline'
-  import { ExclamationCircleIcon } from '@heroicons/vue/24/outline'
-
+  import { useNotification } from '@/stores/notification'
+  import Notification from '@/components/Notification.vue'
+  const { notification, showNotification } = useNotification()
   const stores = dataBase()
   const users = ref(stores.users)
-  
-  const notification = ref({
-    message: '',
-    type: 'error', // 'error', 'success', 'warning'
-    show: false
-  })
+
   const errorTimeout = ref(null)
   const identification = ref(null);
   const password = ref(null);
-  function showNotification(message, type = 'error') {
-    if (errorTimeout.value) {
-      clearTimeout(errorTimeout.value)
-    }
-    
-    notification.value = {
-      message,
-      type,
-      show: true
-    }
-    
-    errorTimeout.value = setTimeout(() => {
-      notification.value.show = false
-    }, 5000)
-  }
   async function getAvatar(identity_number){
     console.log("get_avatar")
     const response = await axios.get(`http://127.0.0.1:8000/users/${identity_number}/photo`)
@@ -69,8 +50,10 @@
         });
         localStorage.setItem('identity_number', JSON.stringify(identification.value))
         getAvatar(identification.value)
-        window.location.href = "/app"
         showNotification("Bienvenido a nuestra app", 'success')
+        setTimeout(() => {
+          window.location.href = "/app";
+        }, 1000)
     }catch(error){
       if (error.status ==500){
         showNotification("Contraseña inválida", 'error')
@@ -146,19 +129,10 @@
         </router-link>
     </button>
     <!-- Notificación dinámica -->
-    <transition name="slide-fade">
-      <div 
-        v-if="notification.show"
-        class="fixed bottom-4 right-4 w-96 h-24 p-4 rounded-lg shadow-lg transition-all duration-500 ease-in-out flex items-center"
-        :class="{
-          'bg-red-100 border-l-4 border-red-500 text-red-700': notification.type === 'error',
-          'bg-green-100 border-l-4 border-green-500 text-green-700': notification.type === 'success',
-          'bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700': notification.type === 'warning'
-        }"
-      >
-      <ExclamationCircleIcon class="h-6 w-6 mr-2"  :class="{'text-red-600': notification.type === 'error','text-green-600': notification.type === 'success','text-yellow-600': notification.type === 'warning'}"/>
-        <span class="font-semibold">{{ notification.message }}</span>
-      </div>
-    </transition>
+    <Notification 
+      :show="notification.show"
+      :message="notification.message"
+      :type="notification.type"
+    />
   </div>
 </template>
