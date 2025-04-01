@@ -4,8 +4,10 @@
   
   import { dataBase } from '@/stores/database'
   import axios from 'axios';
+
   import { ArrowLeftEndOnRectangleIcon } from '@heroicons/vue/24/outline'
-  
+  import { ExclamationCircleIcon } from '@heroicons/vue/24/outline'
+
   const stores = dataBase()
   const users = ref(stores.users)
   
@@ -154,25 +156,7 @@
           'bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700': notification.type === 'warning'
         }"
       >
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          class="h-6 w-6 mr-2" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor"
-          :class="{
-            'text-red-600': notification.type === 'error',
-            'text-green-600': notification.type === 'success',
-            'text-yellow-600': notification.type === 'warning'
-          }"
-        >
-          <path 
-            stroke-linecap="round" 
-            stroke-linejoin="round" 
-            stroke-width="2" 
-            :d="notification.type === 'success' ? 'M5 13l4 4L19 7' : 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'" 
-          />
-        </svg>
+      <ExclamationCircleIcon class="h-6 w-6 mr-2"  :class="{'text-red-600': notification.type === 'error','text-green-600': notification.type === 'success','text-yellow-600': notification.type === 'warning'}"/>
         <span class="font-semibold">{{ notification.message }}</span>
       </div>
     </transition>

@@ -4,7 +4,7 @@
   import axios from 'axios'
 
   import { dataBase } from '@/stores/database'
-
+  import { Validators } from '@/stores/validate.js'
   import { PlusIcon } from '@heroicons/vue/24/outline'
   import { UsersIcon } from '@heroicons/vue/24/outline'
   import { TrashIcon } from '@heroicons/vue/24/outline'
@@ -17,12 +17,6 @@
   const amount  = ref('')
   const users = ref(stores.users)
   const identity_number = ref(JSON.parse(localStorage.getItem('identity_number')) || null)
-  function validatePlate( plate ){
-    if( !plate ) return "El campo es obligatorio"
-    if( plate.length < 6 || plate.length > 7 ) return "6 o 7 Dígitos"
-    if( !/^[a-zA-Z0-9]+$/.test(plate) ) return "Formato incorrecto"
-    return ""
-  }
   async function handleNewVehicle(){
     if(!identity_number.value){
       console.log("user null")
@@ -37,7 +31,7 @@
       console.log('ya existe la placa')
       return
     }
-    if(validatePlate(newVehicle.value) == ""){
+    if(Validators.validatePlate(newVehicle.value) == ""){
       try{
         await axios.post('http://127.0.0.1:8000/vehicles', {
           user_id:identity_number.value,
@@ -58,7 +52,7 @@
     
   }
   async function handleDeleteVehicle(){
-    if(validatePlate(myVehiclePlate.value) == ""){
+    if(Validators.validatePlate(myVehiclePlate.value) == ""){
       try {
         const response = await axios.delete(`http://127.0.0.1:8000/vehicles/${myVehiclePlate.value.toUpperCase()}`);
         console.log(response.data.message); // Muestra el mensaje de éxito
@@ -68,28 +62,13 @@
       }
     }
   }
-  const validateIdentification = (id) => {
-    if (!id) return 'La identificación es requerida'
-    if (!/^\d+$/.test(id)) return 'Solo números'
-    if(parseInt(id)<1000 || parseInt(id)>1000000000 ) return "Cantidad de dígitos errónea"
-    return ''
-  }
-  function normalizeAndValidate(amount) {
-    // Reemplazar coma por punto para estandarizar
-    const normalized = amount.replace(',', '.');
-    
-    // Validar formato
-    if (!/^\d+(?:\.\d{1,2})?$/.test(normalized)) {
-      return { isValid: false, value: null };
-    }
-    
-    return { isValid: true, value: parseFloat(normalized) };
-  }
+  
   async function handleThirdPartyPlate(){
-    const result =  normalizeAndValidate(amount.value)
-    if(!result.isValid || validateIdentification(thirdPartyPlate.value)!="" )
+    const result =  Validators.normalizeAndValidate(amount.value)
+    if(!result.isValid || Validators.validateIdentification(thirdPartyPlate.value)!="" )
       return
-    const user = users.value.filter(user => user.identity_number == identity_number.value)
+    const user = users.value.filter(user => user.identity_number == parseInt(identity_number.value))
+    console.log(user , 'usuario')
     
     try{
       await axios.post(`http://127.0.0.1:8000/users/${identity_number.value}/balance`, {
@@ -99,7 +78,6 @@
           'Content-Type': 'application/json',
         },
       });
-      window.location.href = "/app";
     }catch (error) {
       if (error.response?.data?.error?.includes('UNIQUE constraint')) {
         alert('El usuario, cédula o email ya están registrados', 'error')
@@ -109,7 +87,8 @@
         alert('Error de comunicación con la base de datos', 'error')
       }
     }
-    const thirdUser = users.value.filter(user => user.identity_number == hirdPartyPlate.value)
+    const thirdUser = users.value.filter(user => user.identity_number == parseInt(thirdPartyPlate.value))
+    console.log(thirdUser, 'pago de tercero')
     try{
       await axios.post(`http://127.0.0.1:8000/users/${thirdPartyPlate.value}/balance`, {
         balance: thirdUser.balancce + amount.value,

@@ -3,9 +3,12 @@
   import { RouterLink } from 'vue-router'
   
   import { dataBase } from '@/stores/database'
+  import {Validators} from "@/stores/validate"
   import axios from 'axios'
   
   import { ArrowLeftEndOnRectangleIcon } from '@heroicons/vue/24/outline'
+  import { ExclamationCircleIcon } from '@heroicons/vue/24/outline'
+  
   
   const stores = dataBase()
   const users = ref(stores.users)
@@ -27,39 +30,7 @@
 
   const showError = ref(false)
   const errorTimeout = ref(null)
-  const validateUsername = (username) => {
-    if (!username) return 'El nombre de usuario es requerido'
-    if (username.length > 20) return 'Máximo 20 caracteres'
-    if (/\s/.test(username)) return 'No puede contener espacios'
-    if (!/^[a-zA-Z0-9]+$/.test(username)) return 'Solo letras y números'
-
-    return ''
-  }
-
-  const validateEmail = (email) => {
-    if (!email) return 'El email es requerido'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Email inválido'
-    return ''
-  }
-
-  const validatePhone = (phone) => {
-    if (!phone) return 'El teléfono es requerido'
-    if (!/^\d+$/.test(phone)) return 'Solo números'
-    if (parseInt(phone) < 1000000000 || parseInt(phone) >9999999999 ) return 'Mínimo 10 dígitos'
-    return ''
-  }
-  const validateIdentification = (id) => {
-    if (!id) return 'La identificación es requerida'
-    if (!/^\d+$/.test(id)) return 'Solo números'
-    if(parseInt(id)<1000 || parseInt(id)>1000000000 ) return "Cantidad de dígitos errónea"
-    return ''
-  }
-
-  const validatePassword = (password) => {
-    if (!password) return 'La contraseña es requerida'
-    if (password.length < 8) return 'Mínimo 8 caracteres'
-    return ''
-  }
+  
   function showNotification(message, type = 'error') {
     if (errorTimeout.value) {
       clearTimeout(errorTimeout.value)
@@ -79,14 +50,13 @@
     let isValid = true
     
     // Validar cada campo
-    errors.value.username = validateUsername(user.value.username)
-    errors.value.email = validateEmail(user.value.email)
-    errors.value.phone = validatePhone(user.value.phone_number)
-    errors.value.identification = validateIdentification(user.value.identity_number)
-    errors.value.password = validatePassword(user.value.password)
+    errors.value.username = Validators.validateUsername(user.value.username)
+    errors.value.email = Validators.validateEmail(user.value.email)
+    errors.value.phone = Validators.validatePhone(user.value.phone_number)
+    errors.value.identification = Validators.validateIdentification(user.value.identity_number)
+    errors.value.password = Validators.validatePassword(user.value.password)
     Array.from(users.value).forEach(element => {
       console.log(element.phone_number , element.identity_number)
-        
       if(element.username == user.value.username){
         errors.value.username = "Este nombre de usuario ya existe"
         return
@@ -211,13 +181,13 @@
           <div class="relative">
             <input
               class="w-full h-18 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border-2 border-indigo-900 rounded-md px-3 py-2 pt-6 transition duration-300 ease focus:outline-none focus:border-indigo-950 hover:border-slate-300 shadow-sm focus:shadow"
-              name="identification"
-              id="identification"
+              name="identity_number"
+              id="identity_number"
               v-model="user.identity_number"
             />
             <label
               class="absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-indigo-900 text-md transition-all transform origin-left"
-              for="identification"
+              for="identity_number"
             >
               identificación
             </label>
@@ -285,25 +255,7 @@
           'bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700': notification.type === 'warning'
         }"
       >
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          class="h-6 w-6 mr-2" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor"
-          :class="{
-            'text-red-600': notification.type === 'error',
-            'text-green-600': notification.type === 'success',
-            'text-yellow-600': notification.type === 'warning'
-          }"
-        >
-          <path 
-            stroke-linecap="round" 
-            stroke-linejoin="round" 
-            stroke-width="2" 
-            :d="notification.type === 'success' ? 'M5 13l4 4L19 7' : 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'" 
-          />
-        </svg>
+      <ExclamationCircleIcon class="h-6 w-6 mr-2"  :class="{'text-red-600': notification.type === 'error','text-green-600': notification.type === 'success','text-yellow-600': notification.type === 'warning'}"/>
         <span class="font-semibold">{{ notification.message }}</span>
       </div>
     </transition>
