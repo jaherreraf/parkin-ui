@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted} from 'vue'
+    import { ref, onMounted } from 'vue'
 
     import axios from 'axios'
 
@@ -20,6 +20,17 @@
         {title:"Denuncias"}
     ])
     const dollar = ref(stores.dollar)
+    const payments = ref(stores.payments)
+    const mobile = ref([])
+    const transfer = ref([])
+    onMounted(()=>{
+        Array.from(payments.value).forEach(item=>{
+            if(item.method == 'transfer')
+                transfer.value.push(item)
+            else if(item.method == 'mobile payment' )
+                mobile.value.push(item)
+        })
+    })
 </script>
 <template>
    <div class="h-auto w-auto bg-gray-50 rounded-lg border border-gray-200 flex flex-col items-center justify-center relative">    
@@ -74,23 +85,22 @@
                         </div>
                     </div>
                     <div v-else-if="indexActivator==0" class="p-6 bg-gray-50 rounded-xl shadow-lg border border-gray-200 max-w-3xl mx-auto flex flex-col items-center justify-between gap-2">
-                        <div class="w-full bg-white rounded-lg border border-slate-200 shadow-sm p-3 flex flex-col sm:flex-row items-center gap-3">
+                        <div class="w-full bg-white rounded-lg border border-slate-200 shadow-sm p-3 flex flex-col sm:flex-row items-center gap-3" v-for="item, index in transfer" :key="index">
                             <!-- Información de la transferencia -->
                             <div class="flex-1 min-w-0 p-2">
-                                <span class="font-medium text-indigo-700 truncate">BANCO DE VENEZUELA</span>
                                 <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 mt-1">
-                                    <span>Ref: <span class="font-mono">789456123</span></span>
-                                    <span>Monto: <span class="font-medium text-indigo-600">Bs. 1.500,00</span></span>
+                                    <span>Ref: <span class="font-mono">{{ item.reference }}</span></span>
+                                    <span>Monto: <span class="font-medium text-indigo-600">Bs. {{item.amount}}</span></span>
                                 </div>
-                            </div>
-                            
-                            <!-- Acciones -->
-                            <div class="flex flex-col xs:flex-row gap-2">
                                 <!-- Confirmación normal -->
                                 <button class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-md transition-colors whitespace-nowrap">
                                     Confirmar
                                 </button>
+                            </div>
+                            <!-- Acciones -->
+                            <div class="flex flex-col xs:flex-row gap-2">
                                 
+                                <small class="text-slate-500 font-bold">Confirmar con otro monto</small>
                                 <!-- Confirmación con monto alternativo -->
                                 <div class="flex flex-col items-center justify-center bg-slate-100 rounded-xl p-1">
                                 
@@ -99,47 +109,46 @@
                                         type="text" 
                                         placeholder="Monto"
                                         class="w-24 px-2 py-1.5 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                                            :id="'amount'+ index "
                                         >
                                         <button class="px-2 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition-colors whitespace-nowrap">
                                             Aplicar
                                         </button>
                                     </div>
-                                    <small class="text-slate-500 font-bold">Monto incorrecto</small>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div v-else-if="indexActivator==1" class="p-6 bg-gray-50 rounded-xl shadow-lg border border-gray-200 max-w-3xl mx-auto">
-                        <div class="w-full bg-white rounded-lg border border-slate-200 shadow-sm p-3 flex flex-col sm:flex-row items-center gap-3">
+                        <div class="w-full bg-white rounded-lg border border-slate-200 shadow-sm p-3 flex flex-col sm:flex-row items-center gap-3" v-for="item,index in mobile" :key="index">
                             <!-- Información de la transferencia -->
                             <div class="flex-1 min-w-0 p-2">
                                 <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 mt-1">
-                                    <span>Telefóno: <span class="font-mono">04141628880</span></span>
-                                    <span>Monto: <span class="font-medium text-indigo-600">Bs. 1.500,00</span></span>
+                                    <span>Telefóno: <span class="font-mono">{{ item.phone_number }}</span></span>
+                                    <span>Ref: <span class="font-mono">{{ item.reference }}</span></span>
+                                    <span>Monto: <span class="font-medium text-indigo-600">Bs. {{ item.amount }}</span></span>
                                 </div>
-                            </div>
-                            
-                            <!-- Acciones -->
-                            <div class="flex flex-col xs:flex-row gap-2">
                                 <!-- Confirmación normal -->
                                 <button class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-md transition-colors whitespace-nowrap">
                                     Confirmar
                                 </button>
-                                
+                            </div>
+                            <!-- Acciones -->
+                            <div class="flex flex-col xs:flex-row gap-2">
                                 <!-- Confirmación con monto alternativo -->
                                 <div class="flex flex-col items-center justify-center bg-slate-100 rounded-xl p-1">
-                                
+                                    <small class="text-slate-500 font-bold">Confirmar con otro monto</small>
                                     <div class="flex items-center gap-1" title="Monto incorrecto">
                                         <input 
                                         type="text" 
                                         placeholder="Monto"
                                         class="w-24 px-2 py-1.5 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                                        :id="'amount' + index"
                                         >
                                         <button class="px-2 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition-colors whitespace-nowrap">
                                             Aplicar
                                         </button>
                                     </div>
-                                    <small class="text-slate-500 font-bold">Monto incorrecto</small>
                                 </div>
                             </div>
                         </div>

@@ -6,8 +6,8 @@
   onMounted(function(){
     stores.fetchUsers()
     stores.fetchVehicles()
+    stores.fetchPayments()
     /*stores.fetchFees()
-    stores.fetchPayment()
     stores.fetchRecord()
     stores.fetchNotification()
     */

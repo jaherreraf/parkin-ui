@@ -7,8 +7,12 @@ import logoLight from '@/assets/parking-light.svg'
 import parking from '@/assets/parking.svg'
 import xIcon from '@/assets/x.svg'
 import facebook from '@/assets/facebook.svg'
-import instagram from '@/assets/instagram.svg'
+import instagram from '@/assets/instagram.svg'  
+
 import Timeline from '@/components/Timeline.vue'
+import Card from '@/components/Card.vue'
+
+
 
 const links = ref([
   {title:"Inicio", href:"#hero"},
@@ -92,7 +96,12 @@ const links = ref([
     </section>
     <!--founder Secton-->
     <section class="w-screen h-dvh">
-      <span>Fundadores</span>
+      <div>
+        <span>Sobre nosotros</span>
+      </div>
+      <p>Empresa,desarrollada para </p>
+      <Card/>
+
       
     </section>
     <!-- Footer -->

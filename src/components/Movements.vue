@@ -30,10 +30,41 @@
     return { isValid: true, value: parseFloat(normalized) };
   }
 
-  async function handleTransfer(){
+  async function handleTransfer() {
+    let result = normalizeAndValidate(transfer.value.amount);
+    if (!result.isValid || !transfer.value.reference) {
+        alert("Por favor complete todos los campos correctamente");
+        return;
+    }
+    console.log(transfer.value)
+    try {
+        const response = await axios.post('http://127.0.0.1:8000/payment', {
+            id_user: user.value.identity_number,
+            method: "transfer",
+            phone_number: user.value.phone_number,
+            amount: parseFloat(transfer.value.amount),
+            reference: transfer.value.reference
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-
-  }
+        if (response.data.success) {
+            alert("Transferencia registrada exitosamente");
+            transfer.value = { amount: '', reference: '' };
+        } else {
+            alert("Error: " + (response.data.message || "Error desconocido"));
+        }
+    } catch(error) {
+        console.error('Error:', error);
+        if (error.response) {
+            alert(`Error: ${error.response.data.error || 'Error al procesar la transferencia'}`);
+        } else {
+            alert('Error de conexión con el servidor');
+        }
+    }
+}
   async function  handlePayment(){
     let result = normalizeAndValidate(payment.value.amount)
     if(validateReference(payment.value.reference)!="" || !result.isValid)
@@ -52,7 +83,11 @@
         },
       });
     }catch(error){
-      console.log(error)
+      if (error.response) {
+            alert(`Error: ${error.response.data.error || 'Error al procesar la transferencia'}`);
+        } else {
+            alert('Error de conexión con el servidor');
+        }
     }
   }
   onMounted(function(){

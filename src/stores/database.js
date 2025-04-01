@@ -5,7 +5,7 @@ export const dataBase = defineStore('dataBase', () => {
   const users = ref([])
   const vehicles = ref([])
   const fees = ref([])
-  //const payment = ref([])
+  const payments = ref([])
   const record = ref([])
   const notification = ref([])
   const dollar = ref(null)
@@ -17,15 +17,16 @@ export const dataBase = defineStore('dataBase', () => {
     const response = await axios.get("http://127.0.0.1:8000/vehicles")
     vehicles.value = response.data 
   }
+  async function fetchPayments(){
+    const response = await axios.get("http://127.0.0.1:8000/payments")
+    payments.value = response.data 
+  }
   /*
   async function fetchFees(){
     const response = await axios.get("http://127.0.0.1:8000/fees")
     fees.value = response.data 
   }
-  async function fetchPayment(){
-    const response = await axios.get("http://127.0.0.1:8000/payment")
-    payment.value = response.data 
-  }
+  
   async function fetchRecord(){
     const response = await axios.get("http://127.0.0.1:8000/record")
     record.value = response.data 
@@ -41,5 +42,5 @@ export const dataBase = defineStore('dataBase', () => {
     const response = await axios.get("https://pydolarve.org/api/v1/dollar?page=bcv&monitor=usd")
     dollar.value = response.data
   }
-  return {users , vehicles,  dollar , fetchUsers , fetchVehicles,  fetchDollar}
+  return {users , vehicles,  dollar , payments , fetchPayments, fetchUsers , fetchVehicles,  fetchDollar}
 })

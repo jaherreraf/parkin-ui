@@ -44,7 +44,7 @@
     DocumentTextIcon
 
   }
-  const indexActivator = ref(0)
+  const indexActivator = ref(2)
   const user = ref(null)
   const imageBase64 = ref( localStorage.getItem('avatar') || userImg )
   function handleActivator(index){

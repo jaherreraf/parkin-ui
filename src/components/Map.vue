@@ -1,90 +1,63 @@
 <script setup>
-import { ref } from 'vue'
-import floorA from '@/assets/floorA.jpg'
-import floorB from '@/assets/floorB.jpg'
-import floorC from '@/assets/floorC.jpg'
+  import { ref } from 'vue'
+  import floorA from '@/assets/floorA.jpg'
+  import floorB from '@/assets/floorB.jpg'
+  import floorC from '@/assets/floorC.jpg'
 
-const floors = ref([
-  { title: 'Planta Baja', src: floorA },
-  { title: 'Piso 1', src: floorB },
-  { title: 'Piso 2', src: floorC }
-])
 
-const currentSlide = ref(0)
+  import { ArrowUpIcon } from '@heroicons/vue/24/outline'
+  import { ArrowLeftIcon } from '@heroicons/vue/24/outline'
+  import { ArrowRightIcon } from '@heroicons/vue/24/outline'
+  import { ArrowDownIcon } from '@heroicons/vue/24/outline'
 
-const nextSlide = () => {
-  currentSlide.value = (currentSlide.value + 1) % floors.value.length
-}
-
-const prevSlide = () => {
-  currentSlide.value = (currentSlide.value - 1 + floors.value.length) % floors.value.length
-}
-
-const goToSlide = (index) => {
-  currentSlide.value = index
-}
+  const floors = ref([
+    { title: 'Planta Baja', src: floorA },
+    { title: 'Piso 1', src: floorB },
+    { title: 'Piso 2', src: floorC }
+  ])
 </script>
 
 <template>
-  <div class="relative w-full overflow-hidden h-full min-h-96">
-    <!-- Carousel wrapper -->
-    <div class="relative h-56 overflow-hidden rounded-lg md:h-full">
-      <!-- Slides -->
-      <div 
-        v-for="(floor, index) in floors" 
-        :key="index"
-        class="absolute inset-0 transition-opacity duration-700 ease-in-out h-full w-full"
-        :class="{ 'opacity-100': currentSlide === index, 'opacity-0': currentSlide !== index }"
-      >
-        <img 
-          :src="floor.src" 
-          :alt="floor.title" 
-          class="w-full h-full object-contain "
-        >
-        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
-          {{ floor.title }}
+  <div class=" w-full overflow-hidden h-full min-h-96">
+    <img :src="floorA" alt="">
+  <div id="parking" class="w-full h-96 bg-red-300 grid grid-cols-16 grid-rows-8 border-2 border-slate-500">
+    <div class="row-span-8 row-start-1 col-start-1 col-span-2 bg-green-100 grid grid-cols-2 grid-rows-8">
+      <div class="row-start-2 row-span-6 bg-lime-200 border-r-2 border-r-slate-500 grid place-content-center">
+        <ArrowDownIcon class="w-6 h-6 font-bold"/>
+      </div>
+      <div class="row-start-2 row-span-6 bg-lime-200 border-r-2 border-r-slate-500 grid place-content-center text-center">
+        <div class="flex flex-col items-center justify-center gap-2">
+          <span>Subida</span>
+          <ArrowUpIcon class="w-6 h-6 font-bold"/>
         </div>
+
+      </div>
+      <div class="row-start-8 col-start-2  border-b-4 border-b-red-500 relative text-center">
+        <!--box entrance-->
+        Entrada
+          <div class="w-4 h-4 border-2 border-slate-500 bg-slate-950 absolute -bottom-4 -right-2"><!--access control--></div>
       </div>
     </div>
-
-    <!-- Slider indicators -->
-    <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
-      <button 
-        v-for="(_, index) in floors" 
-        :key="index"
-        type="button" 
-        class="w-3 h-3 rounded-full transition-colors"
-        :class="currentSlide === index ? 'bg-white' : 'bg-white/50'"
-        @click="goToSlide(index)"
-        :aria-label="`Ir a slide ${index + 1}`"
-      ></button>
+    <div class="row-span-8 row-start-1 col-start-15 col-span-2 bg-green-100 grid grid-cols-2 grid-rows-8">
+      <div class="row-start-2 row-span-6 bg-red-200 border-r-2 border-r-slate-500 grid place-content-center">
+        <div class="flex flex-col items-center justify-center gap-2">
+          <span>Bajada</span>
+          <ArrowDownIcon class="w-6 h-6 font-bold"/>
+        </div>
+      </div>
+      <div class="row-start-2 row-span-6 bg-lime-200 border-r-2 border-r-slate-500 grid place-content-center text-center">
+        <ArrowUpIcon class="w-6 h-6 font-bold"/>
+      </div>
+      <div class="row-start-8 col-start-1  border-b-4 border-b-red-500 relative text-center">
+        <!--box exit-->
+        Salida
+          <div class="w-4 h-4 border-2 border-slate-500 bg-slate-950 absolute -bottom-4 -left-2"><!--access control--></div>
+      </div>
     </div>
-
-    <!-- Slider controls -->
-    <button 
-      type="button" 
-      class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" 
-      @click="prevSlide"
-    >
-      <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
-        <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-        </svg>
-        <span class="sr-only">Anterior</span>
-      </span>
-    </button>
-    
-    <button 
-      type="button" 
-      class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" 
-      @click="nextSlide"
-    >
-      <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
-        <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-        </svg>
-        <span class="sr-only">Siguiente</span>
-      </span>
-    </button>
+    <div class="col-span-12 bg-amber-100 col-start-3">
+      Ascensor
+    </div>
+    <div>walk</div>
+  </div>
   </div>
 </template>
