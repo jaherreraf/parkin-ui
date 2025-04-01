@@ -28,7 +28,7 @@
 
   const stores = dataBase()
   const users = ref(stores.users)
-  const plates = ref(stores.vehicles)
+  const plates = ref([])
   
   const activator = ref([
   { title: "Movimientos", icon: "BanknotesIcon" },
@@ -92,6 +92,10 @@
       if(row.identity_number == parseInt(identity_number))
         user.value = row
     }) 
+    Array.from(stores.vehicles).forEach((row)=>{
+      if(row.user_id == identity_number)
+        plates.value.push(row)
+    })
   })
 </script>
 
